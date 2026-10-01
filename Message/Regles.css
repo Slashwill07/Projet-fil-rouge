@@ -1,0 +1,214 @@
+:root {
+  --fond: #0017afa7;
+  --panneau: #151b26;
+  --bordure: #0d0d0d;
+  --texte: #eef0f6;
+  --texte-doux: #9aa3b5;
+  --accent: #4a5cf5;
+  /* pastels façon Widgetable */
+  --peche: #ffd6c9;
+  --menthe: #c8f1dc;
+  --lilas: #d9ccff;
+  --citron: #fff1b8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: ui-rounded, "Nunito", "Segoe UI", system-ui, sans-serif;
+  background: var(--fond);
+  color: var(--texte);
+  height: 100vh;
+}
+
+ul { list-style: none; }
+
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+/* ---------- Colonne de gauche ---------- */
+.historique {
+  width: 360px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--bordure);
+  padding: 20px 12px;
+  overflow-y: auto;
+}
+
+.profil {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4px 16px;
+}
+.profil h1 { font-size: 1.3rem; }
+.profil button {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+input[type="search"] {
+  width: 100%;
+  padding: 11px 16px;
+  border: none;
+  border-radius: 999px;
+  background: var(--panneau);
+  color: var(--texte);
+  font: inherit;
+}
+input[type="search"]::placeholder { color: var(--texte-doux); }
+
+/* Avatars (emoji sur fond pastel) */
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  font-size: 1.6rem;
+  background: var(--lilas);
+}
+.c1 .avatar, .avatar.c1 { background: var(--peche); }
+.c2 .avatar, .avatar.c2 { background: var(--menthe); }
+.c3 .avatar, .avatar.c3 { background: var(--lilas); }
+.c4 .avatar, .avatar.c4 { background: var(--citron); }
+
+/* Notes */
+.notes {
+  display: flex;
+  gap: 14px;
+  padding: 18px 4px 10px;
+  overflow-x: auto;
+}
+.notes li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 72px;
+}
+.notes q {
+  quotes: none;
+  font-size: 0.7rem;
+  background: var(--panneau);
+  padding: 5px 9px;
+  border-radius: 12px;
+  max-width: 78px;
+  text-align: center;
+  line-height: 1.2;
+}
+.notes .avatar { width: 64px; height: 64px; font-size: 2rem; }
+.notes small { color: var(--texte-doux); font-size: 0.75rem; }
+
+.entete-liste {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 12px 4px;
+}
+.entete-liste h2 { font-size: 1rem; }
+.entete-liste a { color: var(--texte-doux); text-decoration: none; font-size: 0.9rem; }
+
+/* Liste des conversations */
+.conversations li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px;
+  border-radius: 14px;
+  cursor: pointer;
+}
+.conversations li:hover,
+.conversations li.actif { background: var(--panneau); }
+
+.conversations div { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+.conversations small { color: var(--texte-doux); font-size: 0.85rem; }
+.conversations .non-lu strong,
+.conversations .non-lu small { color: var(--texte); font-weight: 700; }
+.conversations .non-lu::after {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* ---------- Colonne de droite ---------- */
+.conversation {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.titre-conv {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--bordure);
+}
+.titre-conv .avatar { width: 40px; height: 40px; font-size: 1.3rem; }
+.titre-conv h2 { font-size: 1.05rem; }
+
+.fil {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px;
+  overflow-y: auto;
+}
+.fil p {
+  max-width: 60%;
+  padding: 10px 16px;
+  border-radius: 20px;
+  line-height: 1.4;
+}
+.recu { align-self: flex-start; background: var(--panneau); }
+.envoye { align-self: flex-end; background: var(--accent); }
+
+.saisie {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 24px 24px;
+  padding: 8px 8px 8px 18px;
+  border: 1px solid var(--bordure);
+  border-radius: 999px;
+}
+.saisie textarea {
+  flex: 1;
+  resize: none;
+  border: none;
+  outline: none;
+  background: none;
+  color: var(--texte);
+  font: inherit;
+  padding: 8px 0;
+}
+.saisie button {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 20px;
+  background: var(--accent);
+  color: white;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.saisie button:hover { filter: brightness(1.1); }
+
+button:focus-visible,
+input:focus-visible { outline: 2px solid var(--lilas); outline-offset: 2px; }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 700px) {
+  .historique { width: 100%; border-right: none; }
+  .conversation { display: none; }
+}

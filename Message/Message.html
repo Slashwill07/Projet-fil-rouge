@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Messages</title>
+  <link rel="stylesheet" href="Regles.css">
+</head>
+<body>
+  <div class="app">
+
+    <!-- Colonne de gauche : historique des messages -->
+    <aside class="historique">
+      <header class="profil">
+        <h1>mon_pseudo</h1>
+        <button type="button" aria-label="Nouveau message">✏️</button>
+      </header>
+
+      <input type="search" placeholder="Rechercher" aria-label="Rechercher">
+
+      <!-- bulle au-dessus de chaque avatar -->
+      <ul class="notes">
+        <li class="c1"><q>Obsession du moment…</q><span class="avatar"></span><small>Citation toii</small></li>
+        <li class="c2"><q>Musique en boucle</q><span class="avatar"></span><small>Personne 1</small></li>
+        <li class="c3"><q>…</q><span class="avatar"></span><small>Personne 2</small></li>
+        <li class="c4"><q>Allô ?</q><span class="avatar"></span><small>Personne 3</small></li>
+      </ul>
+
+      <nav class="entete-liste">
+        <h2>Messages</h2>
+        <a href="#">Demandes</a>
+      </nav>
+
+      <ul class="conversations">
+        <li class="actif non-lu">
+          <span class="avatar c1"></span>
+          <div><strong>Personne 1</strong><small>2 nouveaux messages · 2 h</small></div>
+        </li>
+        <li class="non-lu">
+          <span class="avatar c2"></span>
+          <div><strong>Personne 2</strong><small>Ok ! · 2 h</small></div>
+        </li>
+        <li>
+          <span class="avatar c3"></span>
+          <div><strong>Personne 3</strong><small>Actif il y a .. min</small></div>
+        </li>
+        <li>
+          <span class="avatar c4"></span>
+          <div><strong>Personne 4</strong><small>Actif il y a .. min</small></div>
+        </li>
+        <li>
+          <span class="avatar c1"></span>
+          <div><strong>Personne 5</strong><small>Tu as envoyé une pièce jointe · 1 j</small></div>
+        </li>
+        <li>
+          <span class="avatar c2"></span>
+          <div><strong>Personne 6</strong><small>Actif il y a 1 h</small></div>
+        </li>
+        <li>
+          <span class="avatar c3"></span>
+          <div><strong>Personne 7</strong><small>Actif il y a 3 h</small></div>
+        </li>
+        <li>
+          <span class="avatar c4"></span>
+          <div><strong>Personne 8</strong><small>Vu hier</small></div>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Colonne de droite : conversation -->
+    <main class="conversation">
+      <header class="titre-conv">
+        <span class="avatar c1"></span>
+        <h2>Personne 1</h2>
+      </header>
+
+      <section class="fil" aria-label="Conversation avec Personne 1">
+        <p class="recu">Salut !</p>
+        <p class="envoye">Salut ! Ça va ?</p>
+        <p class="envoye">On joue ce soir ?</p>
+        <p class="recu">Oui, avec plaisir !</p>
+      </section>
+
+      <form class="saisie">
+        <textarea placeholder="Écris ton message" rows="1" aria-label="Message"></textarea>
+        <button type="submit">Envoyer</button>
+      </form>
+    </main>
+
+  </div>
+</body>
+</html>
