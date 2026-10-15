@@ -1,7 +1,7 @@
 :root {
-  --fond: #0017afa7;
-  --panneau: #151b26;
-  --bordure: #0d0d0d;
+  --fond: hsla(232, 100%, 34%, 0.655);
+  --panneau: hsl(219, 29%, 12%);
+  --bordure: hsl(0, 0%, 5%);
   --texte: #eef0f6;
   --texte-doux: #9aa3b5;
   --accent: #4a5cf5;
@@ -211,4 +211,15 @@ input:focus-visible { outline: 2px solid var(--lilas); outline-offset: 2px; }
 @media (max-width: 700px) {
   .historique { width: 100%; border-right: none; }
   .conversation { display: none; }
+}
+
+label {
+  display: block;
+}
+
+input[type="submit"],
+label {
+  border-radius: 999px;
+  padding: 100px 400px;
+  margin-top: 1rem;
 }
