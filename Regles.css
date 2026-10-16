@@ -246,7 +246,7 @@ input:focus-visible { outline: 2px solid var(--lilas); outline-offset: 2px; }
 }
 .bandeau img {
   display: block;
-  width: min(450px, 100%);
+  width: min(4000px, 100%);
   max-height: 200px;
   height: auto;
   object-fit: contain;
@@ -330,6 +330,12 @@ input[type="text"] {
   font: inherit;
 }
 
+input[type="image"] {
+  border: none;
+  border-radius: 999px;
+  font: inherit;
+}
+
 /* ---------- Mobile ---------- */
 @media (max-width: 700px) {
   .historique { width: 100%; border-right: none; }
@@ -345,4 +351,18 @@ label {
   border-radius: 999px;
   padding: 100px 400px;
   margin-top: 1rem;
+}
+
+.grille-choix-avatars {
+  display: flex;
+  margin-top: 115px;
+  flex-direction: column;
+  align-items: center;
+  gap: 50px;
+}
+
+.rangee-choix-avatars {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
 }
