@@ -1,23 +1,49 @@
 <!DOCTYPE html>
 <html lang="fr">
-    
-    <head>
-        <meta charset="UTF-8">
-        <title>Accueil</title>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Accueil</title>
+  <link rel="stylesheet" href="Regles.css">
+</head>
+<body class="accueil">
 
-        <img
-            src="C:\Users\Alec3\OneDrive\Documents\UQAC\messages kids\image messages kids.png"
-            alt="Logo message kids"
-            width="450"
-            height="400"
-        />
-    </head>
+  <!-- Bandeau avec le logo -->
+  <header class="bandeau">
+    <img src="image-messages-kids.png" alt="Logo message kids">
+  </header>
 
-    <body>
-        <h2>Liste d'amis</h2>
-        <input type="submit" value="Ajouter un ami">
-        <h2>Historique des messages</h2>
-        <h3>Oups ! 😮 Il te manque quelqu’un dans ta liste d’amis ! Ajoute une personne pour continuer l’aventure ! 🎮⭐</h3>
-    </body>
+  <main class="grille">
 
+    <!-- Panneau de gauche : liste d'amis -->
+    <section class="carte carte-amis">
+      <h2>Liste d'amis</h2>
+      <ul class="lignes" aria-hidden="true">
+        <li><span class="pastille"></span><span class="ligne"></span></li>
+        <li><span class="pastille"></span><span class="ligne"></span></li>
+        <li><span class="pastille"></span><span class="ligne"></span></li>
+        <li><span class="pastille"></span><span class="ligne"></span></li>
+        <li><span class="pastille"></span><span class="ligne"></span></li>
+        <li><span class="pastille"></span><span class="ligne"></span></li>
+      </ul>
+      <a class="bouton" href="messages.html">Ajouter un ami</a>
+    </section>
+
+    <!-- Panneau de droite : historique des messages -->
+    <section class="carte carte-historique">
+      <h2>Historique des messages</h2>
+      <h3>Oups ! 😮 Il te manque quelqu’un dans ta liste d’amis ! Ajoute une personne pour continuer l’aventure ! 🎮⭐</h3>
+      <ul class="lignes" aria-hidden="true">
+        <li><span class="pastille"></span><span class="ligne"></span></li>
+        <li><span class="pastille"></span><span class="ligne"></span></li>
+        <li><span class="pastille"></span><span class="ligne"></span></li>
+        <li><span class="pastille"></span><span class="ligne"></span></li>
+        <li><span class="pastille"></span><span class="ligne"></span></li>
+        <li><span class="pastille"></span><span class="ligne"></span></li>
+      </ul>
+    </section>
+
+  </main>
+
+</body>
 </html>
