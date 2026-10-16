@@ -237,6 +237,15 @@ input:focus-visible { outline: 2px solid var(--lilas); outline-offset: 2px; }
   gap: 24px;
 }
 
+.index {
+  height: auto;
+  min-height: 100vh;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 .bandeau {
   background: white;
   border-radius: 24px;
