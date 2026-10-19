@@ -326,6 +326,40 @@ input:focus-visible { outline: 2px solid var(--lilas); outline-offset: 2px; }
 .bouton:hover { filter: brightness(1.1); }
 .bouton:focus-visible { outline: 2px solid var(--lilas); outline-offset: 2px; }
 
+/* Les ronds et barres bleus sont des boutons */
+button.pastille,
+button.ligne {
+  border: none;
+  font: inherit;
+  cursor: pointer;
+}
+button.pastille:hover,
+button.ligne:hover { filter: brightness(0.92); }
+button.pastille:focus-visible,
+button.ligne:focus-visible { outline: 2px solid white; outline-offset: 2px; }
+
+/* Champ d'écriture à gauche, bouton à droite */
+.recherche {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+.recherche input[type="text"] {
+  flex: 1;
+  min-width: 0;
+}
+.recherche .bouton {
+  margin-top: 0;
+  white-space: nowrap;
+}
+button.bouton {
+  border: none;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 @media (max-width: 700px) {
   .grille { grid-template-columns: 1fr; }
 }

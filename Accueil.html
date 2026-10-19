@@ -19,28 +19,33 @@
     <!-- Panneau de gauche : liste d'amis -->
     <section class="carte carte-amis">
       <h2>Liste d'amis</h2>
-      <ul class="lignes" aria-hidden="true">
-        <li><span class="pastille"></span><span class="ligne"></span></li>
-        <li><span class="pastille"></span><span class="ligne"></span></li>
-        <li><span class="pastille"></span><span class="ligne"></span></li>
-        <li><span class="pastille"></span><span class="ligne"></span></li>
-        <li><span class="pastille"></span><span class="ligne"></span></li>
-        <li><span class="pastille"></span><span class="ligne"></span></li>
+      <ul class="lignes">
+        <li><button type="button" class="pastille" aria-label="Ami 1"></button><button type="button" class="ligne" aria-label="Ami 1"></button></li>
+        <li><button type="button" class="pastille" aria-label="Ami 2"></button><button type="button" class="ligne" aria-label="Ami 2"></button></li>
+        <li><button type="button" class="pastille" aria-label="Ami 3"></button><button type="button" class="ligne" aria-label="Ami 3"></button></li>
+        <li><button type="button" class="pastille" aria-label="Ami 4"></button><button type="button" class="ligne" aria-label="Ami 4"></button></li>
+        <li><button type="button" class="pastille" aria-label="Ami 5"></button><button type="button" class="ligne" aria-label="Ami 5"></button></li>
+        <li><button type="button" class="pastille" aria-label="Ami 6"></button><button type="button" class="ligne" aria-label="Ami 6"></button></li>
       </ul>
-      <a class="bouton" href="messages.html">Ajouter un ami</a>
+
+      <!-- À gauche : on écrit le prénom. À droite : le bouton -->
+      <div class="recherche">
+        <input type="text" id="prenom" name="prenom" placeholder="Écris un prénom" aria-label="Prénom de ton ami">
+        <button type="button" class="bouton">Rechercher un ami</button>
+      </div>
     </section>
 
     <!-- Panneau de droite : historique des messages -->
     <section class="carte carte-historique">
       <h2>Historique des messages</h2>
       <h3>Oups ! 😮 Il te manque quelqu’un dans ta liste d’amis ! Ajoute une personne pour continuer l’aventure ! 🎮⭐</h3>
-      <ul class="lignes" aria-hidden="true">
-        <li><span class="pastille"></span><span class="ligne"></span></li>
-        <li><span class="pastille"></span><span class="ligne"></span></li>
-        <li><span class="pastille"></span><span class="ligne"></span></li>
-        <li><span class="pastille"></span><span class="ligne"></span></li>
-        <li><span class="pastille"></span><span class="ligne"></span></li>
-        <li><span class="pastille"></span><span class="ligne"></span></li>
+      <ul class="lignes">
+        <li><button type="button" class="pastille" aria-label="Message 1"></button><button type="button" class="ligne" aria-label="Message 1"></button></li>
+        <li><button type="button" class="pastille" aria-label="Message 2"></button><button type="button" class="ligne" aria-label="Message 2"></button></li>
+        <li><button type="button" class="pastille" aria-label="Message 3"></button><button type="button" class="ligne" aria-label="Message 3"></button></li>
+        <li><button type="button" class="pastille" aria-label="Message 4"></button><button type="button" class="ligne" aria-label="Message 4"></button></li>
+        <li><button type="button" class="pastille" aria-label="Message 5"></button><button type="button" class="ligne" aria-label="Message 5"></button></li>
+        <li><button type="button" class="pastille" aria-label="Message 6"></button><button type="button" class="ligne" aria-label="Message 6"></button></li>
       </ul>
     </section>
 
