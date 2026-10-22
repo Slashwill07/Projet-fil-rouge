@@ -8,7 +8,7 @@ formulaire.addEventListener("submit", async function (event) {
 
   const { data } = await client.from("amis").select("*").eq("prenom", valeur);
   if (data.length === 0) {
-    await client.from("amis").insert([{ prenom: valeur }]);
+    await client.from("utilisateurs").insert([{ prenom: valeur }]);
   }
 
   window.location.href = "accueil.html";

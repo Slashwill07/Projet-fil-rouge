@@ -1,7 +1,43 @@
 const champ = document.querySelector("#prenom");
 const bouton = document.querySelector("#bouton-recherche");
 const resultat = document.querySelector("#resultat");
-const lignes = document.querySelectorAll(".carte-amis .ligne");
+const liste = document.querySelector(".carte-amis .lignes");
+
+// Les amis déjà ajoutés, relus depuis le navigateur
+let mesAmis = JSON.parse(localStorage.getItem("mesAmis")) || [];
+
+// Crée une nouvelle ligne (rond + barre bleue) pour un ami
+function creerBarre(prenom) {
+  const li = document.createElement("li");
+
+  const pastille = document.createElement("button");
+  pastille.type = "button";
+  pastille.className = "pastille";
+  pastille.setAttribute("aria-label", prenom);
+
+  const ligne = document.createElement("button");
+  ligne.type = "button";
+  ligne.className = "ligne";
+  ligne.setAttribute("aria-label", prenom);
+  ligne.textContent = prenom;
+
+  li.appendChild(pastille);
+  li.appendChild(ligne);
+  liste.appendChild(li);
+}
+
+// Écrit chaque ami dans une barre : les barres vides d'abord, puis de nouvelles
+function afficherAmis() {
+  const barres = liste.querySelectorAll(".ligne");
+  mesAmis.forEach(function (prenom, i) {
+    if (i < barres.length) {
+      barres[i].textContent = prenom;
+      barres[i].setAttribute("aria-label", prenom);
+    } else {
+      creerBarre(prenom);
+    }
+  });
+}
 
 bouton.addEventListener("click", async function () {
   const recherche = champ.value;
@@ -25,24 +61,18 @@ bouton.addEventListener("click", async function () {
 
   const estTrouve = data.length > 0;
 
-  let dejaAffiche = false;
-  let barreLibre = null;
-  for (const ligne of lignes) {
-    if (ligne.textContent === recherche) {
-      dejaAffiche = true;
-    } else if (ligne.textContent === "" && barreLibre === null) {
-      barreLibre = ligne;
-    }
-  }
-
   if (!estTrouve) {
     resultat.textContent = "Aucun ami trouvé avec ce prénom. 😢";
-  } else if (dejaAffiche) {
+  } else if (mesAmis.includes(recherche)) {
     resultat.textContent = recherche + " est déjà dans ta liste.";
-  } else if (barreLibre === null) {
-    resultat.textContent = "Ta liste d'amis est pleine.";
   } else {
-    barreLibre.textContent = recherche;
+    mesAmis.push(recherche);
+    localStorage.setItem("mesAmis", JSON.stringify(mesAmis));
+    afficherAmis();
+    liste.scrollTop = liste.scrollHeight; // descend pour montrer le nouvel ami
     resultat.textContent = "Ami trouvé : " + recherche + " ! 🎉";
   }
 });
+
+// Au chargement de la page, on réaffiche les amis déjà ajoutés
+afficherAmis();
