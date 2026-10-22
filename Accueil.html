@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Accueil</title>
   <link rel="stylesheet" href="Regles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="accueil">
 
@@ -31,8 +32,9 @@
       <!-- À gauche : on écrit le prénom. À droite : le bouton -->
       <div class="recherche">
         <input type="text" id="prenom" name="prenom" placeholder="Écris un prénom" aria-label="Prénom de ton ami">
-        <button type="button" class="bouton">Rechercher un ami</button>
+        <button type="button" class="bouton" id="bouton-recherche">Rechercher un ami</button>
       </div>
+      <p id="resultat"></p>
     </section>
 
     <!-- Panneau de droite : historique des messages -->
@@ -48,8 +50,9 @@
         <li><button type="button" class="pastille" aria-label="Message 6"></button><button type="button" class="ligne" aria-label="Message 6"></button></li>
       </ul>
     </section>
+    </main>
 
-  </main>
-
+    <script src="supabaseConfig.js"></script>
+  <script src="scriptAccueil.js"></script>
 </body>
 </html>

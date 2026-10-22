@@ -1,3 +1,6 @@
+/* =====================================================
+   Commun à toutes les pages
+   ===================================================== */
 :root {
   --fond: hsla(232, 100%, 34%, 0.655);
   --panneau: hsl(219, 29%, 12%);
@@ -5,7 +8,6 @@
   --texte: #eef0f6;
   --texte-doux: #9aa3b5;
   --accent: #4a5cf5;
-  /* pastels façon Widgetable */
   --peche: #ffd6c9;
   --menthe: #c8f1dc;
   --lilas: #d9ccff;
@@ -23,12 +25,198 @@ body {
 
 ul { list-style: none; }
 
+button:focus-visible,
+input:focus-visible { outline: 2px solid var(--lilas); outline-offset: 2px; }
+
+input[type="text"] {
+  padding: 11px 16px;
+  border: none;
+  border-radius: 999px;
+  background: var(--panneau);
+  color: var(--texte);
+  font: inherit;
+}
+
+
+/* =====================================================
+   Page de connexion (body class="page")
+   ===================================================== */
+.page {
+  height: auto;
+  min-height: 100vh;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+.page img { max-width: 100%; height: auto; }
+.page h1, .page h2, .page h3 { max-width: 640px; }
+
+/* Bouton « Continuer » plus petit */
+.page input[type="submit"] {
+  padding: 10px 24px;
+  font-size: 1rem;
+}
+
+label {
+  display: block;
+}
+
+input[type="submit"],
+label {
+  border-radius: 999px;
+  padding: 100px 400px;
+  margin-top: 1rem;
+}
+
+
+/* =====================================================
+   Page d'accueil (body class="accueil")
+   ===================================================== */
+.accueil {
+  height: auto;
+  min-height: 100vh;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.bandeau {
+  background: white;
+  border-radius: 24px;
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+}
+.bandeau img {
+  display: block;
+  width: min(4000px, 100%);
+  max-height: 200px;
+  height: auto;
+  object-fit: contain;
+}
+
+.grille {
+  display: grid;
+  grid-template-columns: 1fr 1.7fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.carte {
+  border-radius: 28px;
+  padding: 20px 24px 28px;
+  color: white;
+}
+.carte-amis { background: #f5bd78; }
+.carte-historique { background: #82d252; }
+
+.carte h2 {
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.carte h3 {
+  font-size: 0.95rem;
+  text-align: center;
+  line-height: 1.4;
+  margin-bottom: 16px;
+}
+
+.lignes {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.lignes li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.pastille {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #2fe6e6;
+}
+.ligne {
+  flex: 1;
+  height: 26px;
+  border-radius: 999px;
+  background: #55e3e3;
+}
+
+/* Prénom de l'ami affiché dans la liste d'amis */
+.carte-amis .ligne {
+  text-align: left;
+  padding: 0 14px;
+  font-weight: 700;
+  color: var(--panneau);
+}
+
+.bouton {
+  display: block;
+  margin-top: 24px;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 700;
+}
+.bouton:hover { filter: brightness(1.1); }
+.bouton:focus-visible { outline: 2px solid var(--lilas); outline-offset: 2px; }
+
+/* Les ronds et barres bleus sont des boutons */
+button.pastille,
+button.ligne {
+  border: none;
+  font: inherit;
+  cursor: pointer;
+}
+button.pastille:hover,
+button.ligne:hover { filter: brightness(0.92); }
+button.pastille:focus-visible,
+button.ligne:focus-visible { outline: 2px solid white; outline-offset: 2px; }
+
+/* Champ d'écriture à gauche, bouton à droite */
+.recherche {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+.recherche input[type="text"] {
+  flex: 1;
+  min-width: 0;
+}
+.recherche .bouton {
+  margin-top: 0;
+  white-space: nowrap;
+}
+button.bouton {
+  border: none;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+
+/* =====================================================
+   Page des messages
+   ===================================================== */
+
+/* ---------- Colonne de gauche ---------- */
 .app {
   display: flex;
   height: 100vh;
 }
 
-/* ---------- Colonne de gauche ---------- */
 .historique {
   width: 360px;
   flex-shrink: 0;
@@ -204,39 +392,33 @@ input[type="search"]::placeholder { color: var(--texte-doux); }
 }
 .saisie button:hover { filter: brightness(1.1); }
 
-button:focus-visible,
-input:focus-visible { outline: 2px solid var(--lilas); outline-offset: 2px; }
-
-/* ---------- ACCueil ---------- */
-.page {
-  height: auto;
-  min-height: 100vh;
-  padding: 32px 24px;
+/* =====================================================
+   Page de choix d'avatar
+   ===================================================== */
+.grille-choix-avatars {
   display: flex;
+  margin-top: 115px;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  text-align: center;
-}
-.page img { max-width: 100%; height: auto; }
-.page h1, .page h2, .page h3 { max-width: 640px; }
-
-/* Bouton « Continuer » plus petit */
-.page input[type="submit"] {
-  padding: 10px 24px;
-  font-size: 1rem;
+  gap: 50px;
 }
 
-/* ---------- Page d'accueil  ---------- */
-.accueil {
-  height: auto;
-  min-height: 100vh;
-  padding: 24px;
+.rangee-choix-avatars {
   display: flex;
-  flex-direction: column;
-  gap: 24px;
+  justify-content: center;
+  gap: 50px;
 }
 
+input[type="image"] {
+  border: none;
+  border-radius: 999px;
+  font: inherit;
+}
+
+
+/* =====================================================
+   Page index (body class="index")
+   ===================================================== */
 .index {
   height: auto;
   min-height: 100vh;
@@ -246,140 +428,11 @@ input:focus-visible { outline: 2px solid var(--lilas); outline-offset: 2px; }
   gap: 20px;
 }
 
-.bandeau {
-  background: white;
-  border-radius: 24px;
-  padding: 24px;
-  display: flex;
-  justify-content: center;
-}
-.bandeau img {
-  display: block;
-  width: min(4000px, 100%);
-  max-height: 200px;
-  height: auto;
-  object-fit: contain;
-}
+/* =====================================================
+   Mobile
+   ===================================================== */
 
-.grille {
-  display: grid;
-  grid-template-columns: 1fr 1.7fr;
-  gap: 24px;
-  align-items: start;
-}
-
-.carte {
-  border-radius: 28px;
-  padding: 20px 24px 28px;
-  color: white;
-}
-.carte-amis { background: #f5bd78; }
-.carte-historique { background: #82d252; }
-
-.carte h2 {
-  font-size: 1rem;
-  text-align: center;
-  margin-bottom: 16px;
-}
-.carte h3 {
-  font-size: 0.95rem;
-  text-align: center;
-  line-height: 1.4;
-  margin-bottom: 16px;
-}
-
-.lignes {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.lignes li {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.pastille {
-  width: 28px;
-  height: 28px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  background: #2fe6e6;
-}
-.ligne {
-  flex: 1;
-  height: 26px;
-  border-radius: 999px;
-  background: #55e3e3;
-}
-
-.bouton {
-  display: block;
-  margin-top: 24px;
-  padding: 12px 20px;
-  border-radius: 999px;
-  background: var(--accent);
-  color: white;
-  text-align: center;
-  text-decoration: none;
-  font-weight: 700;
-}
-.bouton:hover { filter: brightness(1.1); }
-.bouton:focus-visible { outline: 2px solid var(--lilas); outline-offset: 2px; }
-
-/* Les ronds et barres bleus sont des boutons */
-button.pastille,
-button.ligne {
-  border: none;
-  font: inherit;
-  cursor: pointer;
-}
-button.pastille:hover,
-button.ligne:hover { filter: brightness(0.92); }
-button.pastille:focus-visible,
-button.ligne:focus-visible { outline: 2px solid white; outline-offset: 2px; }
-
-/* Champ d'écriture à gauche, bouton à droite */
-.recherche {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 24px;
-}
-.recherche input[type="text"] {
-  flex: 1;
-  min-width: 0;
-}
-.recherche .bouton {
-  margin-top: 0;
-  white-space: nowrap;
-}
-button.bouton {
-  border: none;
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-@media (max-width: 700px) {
-  .grille { grid-template-columns: 1fr; }
-}
-
-input[type="text"] {
-  padding: 11px 16px;
-  border: none;
-  border-radius: 999px;
-  background: var(--panneau);
-  color: var(--texte);
-  font: inherit;
-}
-
-input[type="image"] {
-  border: none;
-  border-radius: 999px;
-  font: inherit;
-}
-
-/* ---------- Mobile ---------- */
+   
 @media (max-width: 700px) {
   .historique { width: 100%; border-right: none; }
   .conversation { display: none; }
