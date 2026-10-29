@@ -3,42 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Accueil - Messages Kids</title>
+  <title>Accueil</title>
   <link rel="stylesheet" href="Regles.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="accueil">
+
+  <!-- Bandeau avec le logo -->
   <header class="bandeau">
-    <h1>Messages Kids</h1>
-    <span id="mon-prenom"></span>
-    <button id="deconnexion" type="button">Déconnexion</button>
+    <img src="C:\Users\Alec3\OneDrive\Documents\UQAC\messages kids\image messages kids.png"
+    alt="Logo message kids">
   </header>
 
   <main class="grille">
+
+    <!-- Panneau de gauche : liste d'amis -->
     <section class="carte carte-amis">
-      <h2>Mes amis</h2>
+      <h2>Liste d'amis</h2>
+      <ul class="lignes">
+        <li><button type="button" class="pastille" aria-label="Ami 1"></button><button type="button" class="ligne" aria-label="Ami 1"></button></li>
+        <li><button type="button" class="pastille" aria-label="Ami 2"></button><button type="button" class="ligne" aria-label="Ami 2"></button></li>
+        <li><button type="button" class="pastille" aria-label="Ami 3"></button><button type="button" class="ligne" aria-label="Ami 3"></button></li>
+        <li><button type="button" class="pastille" aria-label="Ami 4"></button><button type="button" class="ligne" aria-label="Ami 4"></button></li>
+        <li><button type="button" class="pastille" aria-label="Ami 5"></button><button type="button" class="ligne" aria-label="Ami 5"></button></li>
+        <li><button type="button" class="pastille" aria-label="Ami 6"></button><button type="button" class="ligne" aria-label="Ami 6"></button></li>
+      </ul>
 
-      <label for="recherche-ami">Rechercher un ami par son prénom</label>
+      <!-- À gauche : on écrit le prénom. À droite : le bouton -->
       <div class="recherche">
-        <input id="recherche-ami" type="text" placeholder="Prénom">
-        <button id="bouton-recherche" type="button">Rechercher</button>
+        <input type="text" id="prenom" name="prenom" placeholder="Écris un prénom" aria-label="Prénom de ton ami">
+        <button type="button" class="bouton" id="bouton-recherche">Rechercher un ami</button>
       </div>
-
-      <p id="resultat-recherche" role="status"></p>
-      <h3>Demandes reçues</h3>
-      <ul id="demandes-recues" class="lignes"></ul>
-
-      <h3>Mes amis</h3>
-      <ul id="liste-amis" class="lignes"></ul>
+      <p id="resultat"></p>
     </section>
 
+    <!-- Panneau de droite : historique des messages -->
     <section class="carte carte-historique">
       <h2>Historique des messages</h2>
-      <ul id="historique-messages" class="lignes"></ul>
+      <h3>Oups ! 😮 Il te manque quelqu’un dans ta liste d’amis ! Ajoute une personne pour continuer l’aventure ! 🎮⭐</h3>
+      <ul class="lignes">
+        <li><button type="button" class="pastille" aria-label="Message 1"></button><button type="button" class="ligne" aria-label="Message 1"></button></li>
+        <li><button type="button" class="pastille" aria-label="Message 2"></button><button type="button" class="ligne" aria-label="Message 2"></button></li>
+        <li><button type="button" class="pastille" aria-label="Message 3"></button><button type="button" class="ligne" aria-label="Message 3"></button></li>
+        <li><button type="button" class="pastille" aria-label="Message 4"></button><button type="button" class="ligne" aria-label="Message 4"></button></li>
+        <li><button type="button" class="pastille" aria-label="Message 5"></button><button type="button" class="ligne" aria-label="Message 5"></button></li>
+        <li><button type="button" class="pastille" aria-label="Message 6"></button><button type="button" class="ligne" aria-label="Message 6"></button></li>
+      </ul>
     </section>
-  </main>
+    </main>
 
-  <script src="supabaseConfig.js"></script>
+    <script src="supabaseConfig.js"></script>
   <script src="scriptAccueil.js"></script>
 </body>
 </html>
