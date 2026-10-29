@@ -1,24 +1,30 @@
 <!DOCTYPE html>
 <html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connexion - Messages Kids</title>
+  <link rel="stylesheet" href="Regles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="page">
+  <h1>Bienvenue sur Messages Kids !</h1>
 
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Connexion</title>
-    <link rel="stylesheet" href="Regles.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  </head>
+  <form id="formulaire">
+    <label for="prenom">Ton prénom :</label>
+    <input id="prenom" type="text" required autocomplete="username"
+           placeholder="Ton prénom">
 
-  <body class="page">
-  <h1>Inscris ton prénom ci-dessous pour continuer l'aventure !</h1>
-  <form action="accueil.html">
-    <label for="prenom">Ton Prénom :</label>
-    <input type="text" id="prenom" name="prenom" required>
-    <input type="submit" value="Continuer">
+    <label for="motdepasse">Mot de passe :</label>
+    <input id="motdepasse" type="password" required minlength="8"
+           autocomplete="current-password" placeholder="8 caractères minimum">
+
+    <button type="button" id="inscription">Créer mon compte</button>
+    <button type="submit" id="connexion">Me connecter</button>
+    <p id="resultat" role="status"></p>
   </form>
 
-    <script src="supabaseConfig.js"></script>
+  <script src="supabaseConfig.js"></script>
   <script src="scriptConnexion.js"></script>
 </body>
-
 </html>
