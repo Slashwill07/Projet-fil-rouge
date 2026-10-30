@@ -3,7 +3,7 @@ async function choisirAvatar(nomAvatar) {
   const { data: { user } } = await client.auth.getUser();
  
   if (!user) {
-    window.location.href = "connexion.html";
+    window.location.href = "Connexion.html";
     return;
   }
  
@@ -29,7 +29,6 @@ document.querySelectorAll("input[type='image']").forEach((image) => {
     choisirAvatar(image.id);
   });
 });
-
 //Questions pour le prof : 
 //1. Est-ce que le fait que le lien vers les images soit local à mon ordi c'est problématique ? 
 // qu'est-ce qu'y faut faire sinon ?

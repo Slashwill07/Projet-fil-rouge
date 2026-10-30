@@ -9,26 +9,27 @@
 </head>
 <body class="page">
   <h1>Bienvenue sur Messages Kids !</h1>
- 
+
   <form id="formulaire">
-    <label for="prenom">Ton prénom (la première fois) :</label>
+    <label for="prenom">Ton prénom (pour créer un compte) :</label>
     <input id="prenom" type="text" autocomplete="given-name"
            placeholder="Ton prénom">
- 
+
     <label for="email">Ton e-mail :</label>
     <input id="email" type="email" required autocomplete="email"
            placeholder="exemple@email.com">
- 
-    <button type="submit" id="envoyer">Recevoir mon code</button>
- 
-    <label for="code" id="label-code" hidden>Code reçu par e-mail :</label>
-    <input id="code" type="text" inputmode="numeric" maxlength="10"
-           autocomplete="one-time-code" placeholder="Le code" hidden>
-    <button type="button" id="valider" hidden>Valider</button>
- 
+
+    <label for="motdepasse">Mot de passe :</label>
+    <input id="motdepasse" type="password" autocomplete="current-password"
+           placeholder="8 caractères minimum">
+
+    <button type="submit" id="connexion">Me connecter</button>
+    <button type="button" id="inscription">Créer mon compte</button>
+    <button type="button" id="oublie">Mot de passe oublié ?</button>
+
     <p id="resultat" role="status"></p>
   </form>
- 
+
   <script src="supabaseConfig.js"></script>
   <script src="scriptConnexion.js"></script>
 </body>
