@@ -1,34 +1,40 @@
 const formulaire = document.querySelector("#formulaire");
 const champPrenom = document.querySelector("#prenom");
+const champEmail = document.querySelector("#email");
 const champMotdepasse = document.querySelector("#motdepasse");
 const resultat = document.querySelector("#resultat");
 const boutonInscription = document.querySelector("#inscription");
+const boutonConnexion = document.querySelector("#connexion");
+const sectionAvatars = document.querySelector("#sectionAvatars");
 
-// "Éloïse " -> "eloise@messageskids.app"
-function prenomVersEmail(prenom) {
-  const propre = prenom
-    .trim()
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]/g, "");
-  return propre + "@messageskids.app";
-}
+let modeInscription = false;
+let avatarSelectionne = null;
 
-// Création du compte -> page de choix d'avatar
+// Afficher le choix d'avatar uniquement lors de l'inscription
 boutonInscription.addEventListener("click", async () => {
-  const prenom = champPrenom.value.trim();
-  const password = champMotdepasse.value;
-
-  if (!prenom || password.length < 8) {
-    resultat.textContent =
-      "Écris ton prénom et un mot de passe d'au moins 8 caractères.";
+  if (!modeInscription) {
+    modeInscription = true;
+    sectionAvatars.hidden = false;
+    champPrenom.required = true;
+    champMotdepasse.autocomplete = "new-password";
+    boutonInscription.textContent = "Confirmer l'inscription";
+    boutonConnexion.textContent = "Retour à la connexion";
+    resultat.textContent = "Remplis tes informations et choisis un avatar.";
     return;
   }
 
-  const email = prenomVersEmail(prenom);
-  if (email === "@messageskids.app") {
-    resultat.textContent = "Ton prénom doit contenir des lettres ou des chiffres.";
+  const prenom = champPrenom.value.trim();
+  const email = champEmail.value.trim();
+  const password = champMotdepasse.value;
+
+  if (!prenom || !email || password.length < 8) {
+    resultat.textContent =
+      "Remplis ton prénom, ton e-mail et un mot de passe d'au moins 8 caractères.";
+    return;
+  }
+
+  if (!avatarSelectionne) {
+    resultat.textContent = "Choisis un avatar avant de créer ton compte.";
     return;
   }
 
@@ -38,16 +44,23 @@ boutonInscription.addEventListener("click", async () => {
     const { data, error } = await client.auth.signUp({
       email,
       password,
-      options: { data: { prenom } }
+      options: {
+        data: {
+          prenom,
+          avatar: avatarSelectionne
+        }
+      }
     });
 
     if (error) throw error;
 
     if (data.session) {
-      window.location.href = "ChoixAvatar.html";
+      localStorage.setItem("avatarUtilisateur", avatarSelectionne);
+      localStorage.setItem("prenomUtilisateur", prenom);
+      window.location.href = "accueil.html";
     } else {
       resultat.textContent =
-        "Ce prénom est peut-être déjà pris, ou la confirmation par e-mail est encore activée dans Supabase.";
+        "Compte créé ! Vérifie tes e-mails pour confirmer ton adresse avant de te connecter.";
     }
   } catch (error) {
     resultat.textContent = "Inscription impossible : " + error.message;
@@ -56,11 +69,44 @@ boutonInscription.addEventListener("click", async () => {
   }
 });
 
-// Connexion
+// Sélectionner un avatar
+for (let i = 1; i <= 10; i++) {
+  const avatar = document.getElementById("avatar" + i);
+
+  avatar.addEventListener("click", () => {
+    avatarSelectionne = "avatar" + i;
+
+    document.querySelectorAll("#choixAvatars img").forEach((image) => {
+      image.style.border = "none";
+    });
+
+    avatar.style.border = "3px solid green";
+  });
+
+  avatar.style.cursor = "pointer";
+}
+
+// Connexion ou retour au mode connexion
+boutonConnexion.addEventListener("click", async (event) => {
+  if (modeInscription) {
+    event.preventDefault();
+    modeInscription = false;
+    sectionAvatars.hidden = true;
+    champPrenom.required = false;
+    champMotdepasse.autocomplete = "current-password";
+    avatarSelectionne = null;
+    boutonInscription.textContent = "Créer mon compte";
+    boutonConnexion.textContent = "Me connecter";
+    resultat.textContent = "";
+    return;
+  }
+});
+
+// Connexion avec Supabase
 formulaire.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const email = prenomVersEmail(champPrenom.value);
+  const email = champEmail.value.trim();
   const password = champMotdepasse.value;
 
   try {
@@ -71,10 +117,15 @@ formulaire.addEventListener("submit", async (event) => {
 
     if (error) throw error;
 
-    const avatar = data.user.user_metadata?.avatar;
-    // Si le compte n'a pas encore d'avatar, on retourne le choisir
-    window.location.href = avatar ? "accueil.html" : "ChoixAvatar.html";
+    const utilisateur = data.user;
+    const prenom = utilisateur.user_metadata?.prenom;
+    const avatar = utilisateur.user_metadata?.avatar;
+
+    if (prenom) localStorage.setItem("prenomUtilisateur", prenom);
+    if (avatar) localStorage.setItem("avatarUtilisateur", avatar);
+
+    window.location.href = "accueil.html";
   } catch (error) {
-    resultat.textContent = "Prénom ou mot de passe incorrect.";
+    resultat.textContent = "Connexion impossible : " + error.message;
   }
-});
+})

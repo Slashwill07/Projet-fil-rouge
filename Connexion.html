@@ -12,13 +12,17 @@
 
   <form id="formulaire">
     <label for="prenom">Ton prénom :</label>
-    <input id="prenom" type="text" required autocomplete="username"
+    <input id="prenom" type="text" autocomplete="given-name"
            placeholder="Ton prénom">
+
+    <label for="email">Ton e-mail :</label>
+    <input id="email" type="email" required autocomplete="email"
+           placeholder="exemple@email.com">
 
     <label for="motdepasse">Mot de passe :</label>
     <input id="motdepasse" type="password" required minlength="8"
            autocomplete="current-password" placeholder="8 caractères minimum">
-
+           
     <button type="button" id="inscription">Créer mon compte</button>
     <button type="submit" id="connexion">Me connecter</button>
     <p id="resultat" role="status"></p>
