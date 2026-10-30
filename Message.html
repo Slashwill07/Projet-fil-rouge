@@ -12,25 +12,25 @@
     <aside class="historique">
       <header class="profil">
         <h1 id="mon-pseudo">Messages Kids</h1>
+        <button type="button" id="deconnexion">Déconnexion</button>
       </header>
-
-      <nav class="entete-liste">
+ 
+      <div class="entete-liste">
         <h2>Mes amis</h2>
-        <a href="accueil.html">Accueil</a>
-      </nav>
-
+      </div>
+ 
       <ul id="conversations" class="conversations"></ul>
     </aside>
-
+ 
     <main class="conversation">
       <header class="titre-conv">
         <h2 id="titre-conversation">Choisis un ami</h2>
       </header>
-
+ 
       <section id="fil" class="fil" aria-live="polite">
         <p>Sélectionne un ami pour commencer.</p>
       </section>
-
+ 
       <form id="form-message" class="saisie">
         <textarea
           id="texte-message"
@@ -42,12 +42,19 @@
         ></textarea>
         <button type="submit">Envoyer</button>
       </form>
-
+ 
       <p id="statut-message" role="status"></p>
     </main>
   </div>
-
+ 
   <script src="supabaseConfig.js"></script>
+  <script>
+    // Déconnexion : on ferme la session et on retourne à la page de connexion
+    document.querySelector("#deconnexion").addEventListener("click", async () => {
+      await client.auth.signOut();
+      window.location.href = "connexion.html";
+    });
+  </script>
   <script src="script.js"></script>
 </body>
 </html>

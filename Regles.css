@@ -1,7 +1,7 @@
 /* =====================================================
    Variables et styles communs à toutes les pages
    ===================================================== */
-
+ 
 :root {
   --fond: hsla(232, 100%, 34%, 0.655);
   --panneau: hsl(219, 29%, 12%);
@@ -14,63 +14,59 @@
   --lilas: #d9ccff;
   --citron: #fff1b8;
 }
-
+ 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
-
+ 
 html {
   min-height: 100%;
 }
-
+ 
 body {
   min-height: 100vh;
   font-family: ui-rounded, "Nunito", "Segoe UI", system-ui, sans-serif;
   background: var(--fond);
   color: var(--texte);
 }
-
+ 
 ul {
   list-style: none;
 }
-
+ 
 img {
   max-width: 100%;
 }
-
+ 
 button,
 input,
-textarea,
-select {
+textarea {
   font: inherit;
 }
-
+ 
 button,
 input,
 textarea,
-select,
 a {
   -webkit-tap-highlight-color: transparent;
 }
-
+ 
 button {
   color: inherit;
 }
-
+ 
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
-select:focus-visible,
 a:focus-visible {
   outline: 2px solid var(--lilas);
   outline-offset: 3px;
 }
-
+ 
 input[type="text"],
-input[type="email"],
-input[type="password"] {
+input[type="email"] {
   width: 100%;
   min-width: 0;
   padding: 11px 16px;
@@ -79,26 +75,26 @@ input[type="password"] {
   background: var(--panneau);
   color: var(--texte);
 }
-
+ 
 input::placeholder,
 textarea::placeholder {
   color: var(--texte-doux);
   opacity: 1;
 }
-
+ 
 button:disabled,
 input:disabled,
 textarea:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
-
-
+ 
+ 
 /* =====================================================
-   Page de connexion
+   Pages index, connexion et choix d'avatar
    body class="page"
    ===================================================== */
-
+ 
 .page {
   min-height: 100vh;
   padding: 32px 24px;
@@ -109,20 +105,11 @@ textarea:disabled {
   gap: 16px;
   text-align: center;
 }
-
-.page img {
-  display: block;
-  max-width: min(100%, 400px);
-  height: auto;
-  object-fit: contain;
-}
-
-.page h1,
-.page h2,
-.page h3 {
+ 
+.page h1 {
   max-width: 640px;
 }
-
+ 
 .page form {
   width: min(100%, 420px);
   display: flex;
@@ -130,19 +117,19 @@ textarea:disabled {
   align-items: stretch;
   gap: 12px;
 }
-
+ 
 .page label {
   display: block;
   margin-top: 4px;
   text-align: left;
 }
-
+ 
 .page input[type="text"],
-.page input[type="email"],
-.page input[type="password"] {
+.page input[type="email"] {
   margin-top: 6px;
 }
-
+ 
+.page button,
 .page input[type="submit"] {
   align-self: center;
   margin-top: 8px;
@@ -153,57 +140,26 @@ textarea:disabled {
   color: white;
   cursor: pointer;
 }
-
+ 
+.page button:hover,
 .page input[type="submit"]:hover {
   filter: brightness(1.1);
 }
-
-
+ 
+ 
 /* =====================================================
-   Boutons communs
+   Page index : bandeau avec le logo
+   body class="index"
    ===================================================== */
-
-.bouton {
-  display: inline-block;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 999px;
-  background: var(--accent);
-  color: white;
-  text-align: center;
-  text-decoration: none;
-  font-weight: 700;
-  cursor: pointer;
-  transition: filter 0.2s ease, transform 0.2s ease;
-}
-
-.bouton:hover {
-  filter: brightness(1.1);
-}
-
-.bouton:active {
-  transform: scale(0.98);
-}
-
-button.bouton {
-  font: inherit;
-  font-weight: 700;
-}
-
-
-/* =====================================================
-   Page d'accueil
-   body class="accueil"
-   ===================================================== */
-
-.accueil {
+ 
+.index {
   min-height: 100vh;
   padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
 }
-
+ 
 .bandeau {
   display: flex;
   justify-content: center;
@@ -212,7 +168,7 @@ button.bouton {
   background: white;
   border-radius: 24px;
 }
-
+ 
 .bandeau img {
   display: block;
   width: min(400px, 100%);
@@ -220,145 +176,45 @@ button.bouton {
   height: auto;
   object-fit: contain;
 }
-
-.grille {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr);
-  gap: 24px;
-  align-items: start;
-}
-
-.carte {
-  min-width: 0;
-  padding: 20px 24px 28px;
-  border-radius: 28px;
-  color: white;
-}
-
-.carte-amis {
-  background: #f5bd78;
-}
-
-.carte-historique {
-  background: #82d252;
-}
-
-.carte h2 {
-  margin-bottom: 16px;
-  font-size: 1rem;
-  text-align: center;
-}
-
-.carte h3 {
-  margin-bottom: 16px;
-  font-size: 0.95rem;
-  line-height: 1.4;
-  text-align: center;
-}
-
-.lignes {
+ 
+ 
+/* =====================================================
+   Page de choix d'avatar
+   ===================================================== */
+ 
+.grille-choix-avatars {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-}
-
-.lignes li {
-  display: flex;
   align-items: center;
-  gap: 12px;
-  min-width: 0;
+  gap: 50px;
+  margin-top: 60px;
+  padding: 24px;
 }
-
-.pastille {
-  width: 28px;
-  height: 28px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  background: #2fe6e6;
-}
-
-.ligne {
-  flex: 1;
-  min-width: 0;
-  min-height: 26px;
-  border-radius: 999px;
-  background: #55e3e3;
-}
-
-/* Prénom de l'ami dans la liste */
-
-.carte-amis .ligne {
+ 
+.rangee-choix-avatars {
   display: flex;
-  align-items: center;
-  padding: 4px 14px;
-  color: var(--panneau);
-  font-weight: 700;
-  text-align: left;
-  overflow-wrap: anywhere;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
 }
-
-button.pastille,
-button.ligne {
+ 
+input[type="image"] {
+  display: block;
+  max-width: 100%;
   border: none;
-  font: inherit;
+  border-radius: 50%;
   cursor: pointer;
 }
-
-button.pastille:hover,
-button.ligne:hover {
-  filter: brightness(0.92);
+ 
+input[type="image"]:hover {
+  filter: brightness(0.95);
 }
-
-button.pastille:focus-visible,
-button.ligne:focus-visible {
-  outline: 2px solid white;
-  outline-offset: 2px;
-}
-
-/* Recherche d'amis */
-
-.recherche {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 24px;
-}
-
-.recherche input[type="text"],
-.recherche input[type="search"] {
-  flex: 1;
-  min-width: 0;
-}
-
-.recherche .bouton {
-  flex-shrink: 0;
-  margin-top: 0;
-  white-space: nowrap;
-}
-
-/* Listes générées par JavaScript */
-
-#demandes,
-#demandes-reçues,
-#demandes-recues,
-#liste-amis,
-#historique {
-  min-width: 0;
-}
-
-#demandes li,
-#demandes-reçues li,
-#demandes-recues li {
-  overflow-wrap: anywhere;
-}
-
-
+ 
+ 
 /* =====================================================
    Page des messages
    ===================================================== */
-
-/* Application générale */
-
+ 
 .app {
   display: flex;
   width: 100%;
@@ -367,9 +223,9 @@ button.ligne:focus-visible {
   min-height: 0;
   overflow: hidden;
 }
-
+ 
 /* Colonne de gauche */
-
+ 
 .historique {
   width: 360px;
   max-width: 40%;
@@ -380,7 +236,7 @@ button.ligne:focus-visible {
   overflow-y: auto;
   border-right: 1px solid var(--bordure);
 }
-
+ 
 .profil {
   display: flex;
   justify-content: space-between;
@@ -388,45 +244,37 @@ button.ligne:focus-visible {
   gap: 12px;
   padding: 0 4px 16px;
 }
-
+ 
 .profil h1 {
   min-width: 0;
   font-size: 1.3rem;
   overflow-wrap: anywhere;
 }
-
+ 
 .profil button {
   flex-shrink: 0;
-  padding: 6px;
+  padding: 6px 14px;
   border: none;
-  border-radius: 50%;
-  background: transparent;
-  font-size: 1.3rem;
-  cursor: pointer;
-}
-
-.profil button:hover {
-  background: var(--panneau);
-}
-
-/* Barre de recherche */
-
-input[type="search"] {
-  width: 100%;
-  min-width: 0;
-  padding: 11px 16px;
-  border: 1px solid transparent;
   border-radius: 999px;
   background: var(--panneau);
-  color: var(--texte);
+  font-size: 0.9rem;
+  cursor: pointer;
 }
-
-input[type="search"]::placeholder {
-  color: var(--texte-doux);
+ 
+.profil button:hover {
+  filter: brightness(1.2);
 }
-
-/* Avatars */
-
+ 
+.entete-liste {
+  padding: 12px 4px;
+}
+ 
+.entete-liste h2 {
+  font-size: 1rem;
+}
+ 
+/* Avatars (utilisés dans la liste et l'en-tête de conversation) */
+ 
 .avatar {
   display: inline-flex;
   align-items: center;
@@ -438,93 +286,29 @@ input[type="search"]::placeholder {
   background: var(--lilas);
   font-size: 1.6rem;
 }
-
+ 
 .c1 .avatar,
 .avatar.c1 {
   background: var(--peche);
 }
-
+ 
 .c2 .avatar,
 .avatar.c2 {
   background: var(--menthe);
 }
-
+ 
 .c3 .avatar,
 .avatar.c3 {
   background: var(--lilas);
 }
-
+ 
 .c4 .avatar,
 .avatar.c4 {
   background: var(--citron);
 }
-
-/* Notes / statuts */
-
-.notes {
-  display: flex;
-  gap: 14px;
-  padding: 18px 4px 10px;
-  overflow-x: auto;
-}
-
-.notes li {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  min-width: 72px;
-}
-
-.notes q {
-  max-width: 78px;
-  padding: 5px 9px;
-  border-radius: 12px;
-  background: var(--panneau);
-  font-size: 0.7rem;
-  line-height: 1.2;
-  text-align: center;
-  overflow-wrap: anywhere;
-  quotes: none;
-}
-
-.notes .avatar {
-  width: 64px;
-  height: 64px;
-  font-size: 2rem;
-}
-
-.notes small {
-  color: var(--texte-doux);
-  font-size: 0.75rem;
-}
-
-/* En-tête de la liste */
-
-.entete-liste {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 10px;
-  padding: 12px 4px;
-}
-
-.entete-liste h2 {
-  font-size: 1rem;
-}
-
-.entete-liste a {
-  color: var(--texte-doux);
-  font-size: 0.9rem;
-  text-decoration: none;
-}
-
-.entete-liste a:hover {
-  color: var(--texte);
-}
-
+ 
 /* Liste des conversations */
-
+ 
 .conversations li {
   display: flex;
   align-items: center;
@@ -534,12 +318,12 @@ input[type="search"]::placeholder {
   border-radius: 14px;
   cursor: pointer;
 }
-
+ 
 .conversations li:hover,
 .conversations li.actif {
   background: var(--panneau);
 }
-
+ 
 .conversations li > div {
   display: flex;
   flex: 1;
@@ -547,25 +331,25 @@ input[type="search"]::placeholder {
   gap: 2px;
   min-width: 0;
 }
-
+ 
 .conversations strong,
 .conversations small {
   overflow: hidden;
   text-overflow: ellipsis;
   overflow-wrap: anywhere;
 }
-
+ 
 .conversations small {
   color: var(--texte-doux);
   font-size: 0.85rem;
 }
-
+ 
 .conversations .non-lu strong,
 .conversations .non-lu small {
   color: var(--texte);
   font-weight: 700;
 }
-
+ 
 .conversations .non-lu::after {
   content: "";
   width: 9px;
@@ -574,9 +358,9 @@ input[type="search"]::placeholder {
   border-radius: 50%;
   background: var(--accent);
 }
-
+ 
 /* Colonne de droite */
-
+ 
 .conversation {
   display: flex;
   flex: 1;
@@ -584,9 +368,7 @@ input[type="search"]::placeholder {
   min-width: 0;
   min-height: 0;
 }
-
-/* En-tête de la conversation */
-
+ 
 .titre-conv {
   display: flex;
   align-items: center;
@@ -594,21 +376,21 @@ input[type="search"]::placeholder {
   padding: 14px 24px;
   border-bottom: 1px solid var(--bordure);
 }
-
+ 
 .titre-conv .avatar {
   width: 40px;
   height: 40px;
   font-size: 1.3rem;
 }
-
+ 
 .titre-conv h2 {
   min-width: 0;
   font-size: 1.05rem;
   overflow-wrap: anywhere;
 }
-
+ 
 /* Fil des messages */
-
+ 
 .fil {
   display: flex;
   flex: 1;
@@ -621,7 +403,7 @@ input[type="search"]::placeholder {
   overflow-wrap: anywhere;
   scroll-behavior: smooth;
 }
-
+ 
 .fil p {
   max-width: 60%;
   padding: 10px 16px;
@@ -630,19 +412,19 @@ input[type="search"]::placeholder {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
-
+ 
 .recu {
   align-self: flex-start;
   background: var(--panneau);
 }
-
+ 
 .envoye {
   align-self: flex-end;
   background: var(--accent);
 }
-
+ 
 /* Formulaire d'envoi */
-
+ 
 .saisie {
   display: flex;
   align-items: center;
@@ -652,7 +434,7 @@ input[type="search"]::placeholder {
   border: 1px solid var(--bordure);
   border-radius: 999px;
 }
-
+ 
 .saisie textarea {
   flex: 1;
   width: 100%;
@@ -664,14 +446,13 @@ input[type="search"]::placeholder {
   outline: none;
   background: transparent;
   color: var(--texte);
-  font: inherit;
   padding: 8px 0;
 }
-
+ 
 .saisie textarea:focus-visible {
   outline: none;
 }
-
+ 
 .saisie button {
   flex-shrink: 0;
   padding: 10px 20px;
@@ -682,260 +463,139 @@ input[type="search"]::placeholder {
   font-weight: 700;
   cursor: pointer;
 }
-
+ 
 .saisie button:hover {
   filter: brightness(1.1);
 }
-
-
-/* =====================================================
-   Page de choix d'avatar
-   ===================================================== */
-
-.grille-choix-avatars {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 50px;
-  margin-top: 60px;
-  padding: 24px;
-}
-
-.rangee-choix-avatars {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 30px;
-}
-
-input[type="image"] {
-  display: block;
-  max-width: 100%;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-input[type="image"]:hover {
-  filter: brightness(0.95);
-}
-
-
-/* =====================================================
-   Page index
-   body class="index"
-   ===================================================== */
-
-.index {
-  min-height: 100vh;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-
+ 
+ 
 /* =====================================================
    Responsive : tablettes
    ===================================================== */
-
+ 
 @media (max-width: 900px) {
-  .accueil {
-    padding: 18px;
-  }
-
-  .grille {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
-    gap: 16px;
-  }
-
-  .carte {
-    padding: 18px;
-  }
-
   .historique {
     width: 300px;
     min-width: 240px;
   }
-
+ 
   .titre-conv {
     padding: 14px 16px;
   }
-
+ 
   .fil {
     padding: 18px;
   }
-
+ 
   .saisie {
     margin: 12px 16px 16px;
   }
 }
-
-
+ 
+ 
 /* =====================================================
    Responsive : téléphones
    ===================================================== */
-
+ 
 @media (max-width: 700px) {
-  body {
-    min-height: 100vh;
+  .page {
+    padding: 24px 16px;
   }
-
-  /* Accueil */
-
-  .accueil {
-    padding: 12px;
-    gap: 16px;
+ 
+  .index {
+    padding: 16px;
   }
-
+ 
   .bandeau {
     padding: 16px;
     border-radius: 18px;
   }
-
+ 
   .bandeau img {
     max-height: 150px;
   }
-
-  .grille {
-    grid-template-columns: minmax(0, 1fr);
+ 
+  .grille-choix-avatars {
+    margin-top: 24px;
+    gap: 28px;
+    padding: 16px;
+  }
+ 
+  .rangee-choix-avatars {
     gap: 16px;
   }
-
-  .carte {
-    padding: 18px;
-    border-radius: 22px;
+ 
+  .rangee-choix-avatars input[type="image"] {
+    width: min(28vw, 100px);
+    height: auto;
   }
-
-  .recherche {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .recherche input[type="text"],
-  .recherche input[type="search"] {
-    flex-basis: 100%;
-  }
-
-  .recherche .bouton {
-    width: 100%;
-  }
-
-  /* Connexion */
-
-  .page {
-    padding: 24px 16px;
-  }
-
-  /* Messagerie */
-
-  .app {
-    position: relative;
-    height: 100vh;
-    height: 100dvh;
-  }
-
+ 
   .historique {
     width: 100%;
     max-width: none;
     min-width: 0;
     border-right: none;
   }
-
-  /* Par défaut, la conversation est masquée sur mobile.
-     Le JavaScript devra gérer son affichage si nécessaire. */
-
-  .conversation {
-    min-width: 0;
-  }
-
+ 
   .titre-conv {
     gap: 8px;
     padding: 12px;
   }
-
+ 
   .fil {
-    gap: 8px;
     padding: 12px;
   }
-
+ 
   .fil p {
     max-width: 85%;
     padding: 9px 12px;
   }
-
+ 
   .saisie {
     gap: 8px;
     margin: 10px;
     padding: 6px 6px 6px 12px;
   }
-
+ 
   .saisie button {
     padding: 10px 14px;
   }
-
-  /* Choix d'avatar */
-
-  .grille-choix-avatars {
-    margin-top: 24px;
-    gap: 28px;
-    padding: 16px;
-  }
-
-  .rangee-choix-avatars {
-    gap: 16px;
-  }
-
-  .rangee-choix-avatars input[type="image"] {
-    width: min(28vw, 100px);
-    height: auto;
-  }
-
-  /* Page index */
-
-  .index {
-    padding: 16px;
-  }
 }
-
-
+ 
+ 
 /* =====================================================
    Très petits téléphones
    ===================================================== */
-
+ 
 @media (max-width: 380px) {
-  .carte {
-    padding: 14px;
-  }
-
   .profil h1 {
     font-size: 1.1rem;
   }
-
+ 
   .avatar {
     width: 44px;
     height: 44px;
     font-size: 1.3rem;
   }
-
+ 
   .fil p {
     max-width: 92%;
   }
-
+ 
   .saisie button {
     padding: 9px 11px;
   }
-
+ 
   .rangee-choix-avatars {
     gap: 10px;
   }
 }
-
-
+ 
+ 
 /* =====================================================
    Accessibilité : limiter les animations si demandé
    ===================================================== */
-
+ 
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -943,6 +603,5 @@ input[type="image"]:hover {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
   }
 }
