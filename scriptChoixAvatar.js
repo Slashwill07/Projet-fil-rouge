@@ -68,4 +68,5 @@ async function definirAvatar(avatar) {
 //Questions pour le prof : 
 //1. Est-ce que le fait que le lien vers les images soit local à mon ordi c'est problématique ? 
 // qu'est-ce qu'y faut faire sinon ?
-//2. Est-ce qu'on est obligés de garder mot de passe ou pas ?
+//2. adresse mail obligatoire ? c'est plus simple donc go utiliser ça
+//3. Est-ce qu'on est obligés de garder mot de passe ou pas ?
