@@ -102,8 +102,8 @@ boutonOublie.addEventListener("click", async () => {
   boutonOublie.disabled = true;
  
   const { error } = await client.auth.resetPasswordForEmail(email, {
-    redirectTo: new URL("reinitialiser.html", window.location.href).href
-  });
+  redirectTo: new URL("Reinitialiser.html", window.location.href).href
+ });
  
   boutonOublie.disabled = false;
  
