@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nouveau mot de passe - Messages Kids</title>
+  <link rel="stylesheet" href="Regles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="page">
+  <h1>Choisis un nouveau mot de passe</h1>
+ 
+  <form id="formulaire">
+    <label for="motdepasse">Nouveau mot de passe :</label>
+    <input id="motdepasse" type="password" required minlength="8"
+           autocomplete="new-password" placeholder="8 caractères minimum">
+ 
+    <label for="confirmation">Répète-le :</label>
+    <input id="confirmation" type="password" required minlength="8"
+           autocomplete="new-password" placeholder="Le même mot de passe">
+ 
+    <button type="submit" id="enregistrer">Enregistrer</button>
+  </form>
+ 
+  <p id="resultat" role="status"></p>
+  <a href="Connexion.html">Retour à la connexion</a>
+ 
+  <script src="supabaseConfig.js"></script>
+  <script src="scriptReinitialiser.js"></script>
+</body>
+</html>
