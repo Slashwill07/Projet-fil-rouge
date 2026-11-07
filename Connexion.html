@@ -4,32 +4,49 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Connexion - Messages Kids</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="Regles.css">
+  <link rel="stylesheet" href="Connexion.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="page">
-  <h1>Bienvenue sur Messages Kids !</h1>
-
-  <form id="formulaire">
-    <label for="prenom">Ton prénom (pour créer un compte) :</label>
-    <input id="prenom" type="text" autocomplete="given-name"
-           placeholder="Ton prénom">
-
-    <label for="email">Ton e-mail :</label>
-    <input id="email" type="email" required autocomplete="email"
-           placeholder="exemple@email.com">
-
-    <label for="motdepasse">Mot de passe :</label>
-    <input id="motdepasse" type="password" autocomplete="current-password"
-           placeholder="8 caractères minimum">
-
-    <button type="submit" id="connexion">Me connecter</button>
-    <button type="button" id="inscription">Créer mon compte</button>
-    <button type="button" id="oublie">Mot de passe oublié ?</button>
-
-    <p id="resultat" role="status"></p>
-  </form>
-
+<body class="connexion">
+  <!-- Décor : taches de couleur floues -->
+  <div class="decor" aria-hidden="true">
+    <span class="tache tache-bleue"></span>
+    <span class="tache tache-rose"></span>
+    <span class="tache tache-ciel"></span>
+  </div>
+ 
+  <main class="carte">
+    <h1>Bienvenue sur Messages Kids !</h1>
+    <p class="sous-titre">Connecte-toi pour retrouver tes amis</p>
+ 
+    <form id="formulaire">
+      <label for="prenom">Ton prénom <span class="note">(pour créer un compte)</span></label>
+      <input id="prenom" type="text" autocomplete="given-name"
+             placeholder="Ton prénom">
+ 
+      <label for="email">Ton e-mail</label>
+      <input id="email" type="email" required autocomplete="email"
+             placeholder="exemple@email.com">
+ 
+      <label for="motdepasse">Mot de passe</label>
+      <input id="motdepasse" type="password" autocomplete="current-password"
+             placeholder="8 caractères minimum">
+ 
+      <button type="submit" id="connexion" class="bouton-principal">Me connecter</button>
+ 
+      <div class="separateur"><span>OU</span></div>
+ 
+      <button type="button" id="inscription" class="bouton-verre">Créer mon compte</button>
+      <button type="button" id="oublie" class="lien">Mot de passe oublié ?</button>
+ 
+      <p id="resultat" role="status"></p>
+    </form>
+  </main>
+ 
   <script src="supabaseConfig.js"></script>
   <script src="scriptConnexion.js"></script>
 </body>

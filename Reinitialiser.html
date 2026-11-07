@@ -1,30 +1,44 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Nouveau mot de passe - Messages Kids</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="Regles.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="page">
-  <h1>Choisis un nouveau mot de passe</h1>
- 
-  <form id="formulaire">
-    <label for="motdepasse">Nouveau mot de passe :</label>
-    <input id="motdepasse" type="password" required minlength="8"
-           autocomplete="new-password" placeholder="8 caractères minimum">
- 
-    <label for="confirmation">Répète-le :</label>
-    <input id="confirmation" type="password" required minlength="8"
-           autocomplete="new-password" placeholder="Le même mot de passe">
- 
-    <button type="submit" id="enregistrer">Enregistrer</button>
-  </form>
- 
-  <p id="resultat" role="status"></p>
-  <a href="Connexion.html">Retour à la connexion</a>
- 
+
+<body class="connexion">
+  <div class="decor" aria-hidden="true">
+    <span class="tache tache-bleue"></span>
+    <span class="tache tache-rose"></span>
+    <span class="tache tache-ciel"></span>
+  </div>
+
+  <main class="carte">
+    <h1>Choisis un nouveau mot de passe</h1>
+    <p class="sous-titre">Écris-le deux fois pour être sûr</p>
+
+    <form id="formulaire">
+      <label for="motdepasse">Nouveau mot de passe</label>
+      <input id="motdepasse" type="password" required minlength="8"
+             autocomplete="new-password" placeholder="8 caractères minimum">
+
+      <label for="confirmation">Répète-le</label>
+      <input id="confirmation" type="password" required minlength="8"
+             autocomplete="new-password" placeholder="Le même mot de passe">
+
+      <button type="submit" id="enregistrer" class="bouton-principal">Enregistrer</button>
+    </form>
+
+    <p id="resultat" role="status"></p>
+    <a href="Connexion.html" class="lien">Retour à la connexion</a>
+  </main>
+
   <script src="supabaseConfig.js"></script>
   <script src="scriptReinitialiser.js"></script>
 </body>

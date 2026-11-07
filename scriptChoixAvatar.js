@@ -1,12 +1,15 @@
 // Enregistre l'avatar choisi dans la table profils.
 async function choisirAvatar(nomAvatar) {
-  const { data: { user } } = await client.auth.getUser();
- 
-  if (!user) {
+  const { data: { session } } = await client.auth.getSession();
+
+  if (!session) {
+    alert("Ta session a expiré. Reconnecte-toi pour choisir ton avatar.");
     window.location.href = "Connexion.html";
     return;
   }
- 
+
+  const user = session.user;
+
   const { error } = await client.from("profils").upsert({
     id: user.id,
     prenom: user.user_metadata?.prenom || "Ami",

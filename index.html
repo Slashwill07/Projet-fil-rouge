@@ -1,24 +1,30 @@
 <!DOCTYPE html>
 <html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Messages Kids</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="Regles.css">
+</head>
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>index</title>
-        <link rel="stylesheet" href="Regles.css">
-    </head>
+<body class="connexion">
+  <!-- Décor : taches de couleur floues -->
+  <div class="decor" aria-hidden="true">
+    <span class="tache tache-bleue"></span>
+    <span class="tache tache-rose"></span>
+    <span class="tache tache-ciel"></span>
+  </div>
 
-    <body class="index">
-        <header class="bandeau">
-            <img 
-            src="ressources/logoMessagesKids.png" 
-            alt="logo de messages kids">
-        </header>
-        <div class="page">
-            <form action="Connexion.html">
-                <input type="submit" value="C'est parti !" id="Connexion" procedure="connexion" required>
-            </form>
-        </div>
-    </body>
+  <main class="carte">
+    <img class="logo" src="ressources/logoMessagesKids.png" alt="logo de messages kids">
+    <p class="sous-titre">Retrouve tes amis et envoie-leur des messages</p>
 
+    <form action="Connexion.html">
+      <button type="submit" class="bouton-principal">C'est parti !</button>
+    </form>
+  </main>
+</body>
 </html>

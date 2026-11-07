@@ -21,8 +21,17 @@ async function allerSuite(user) {
 // Déjà connecté sur cet appareil ? On saute cette page.
 (async () => {
   const { data: { session } } = await client.auth.getSession();
-  if (session) allerSuite(session.user);
-})();
+  if (!session) return;
+
+  // On vérifie auprès de Supabase que la session est encore valide
+  const { data: { user }, error } = await client.auth.getUser();
+  if (error || !user) {
+    await client.auth.signOut(); // session périmée : on la supprime
+    return;
+  }
+
+  allerSuite(user);
+})(); 
  
 // Se connecter : e-mail + mot de passe
 formulaire.addEventListener("submit", async (event) => {
