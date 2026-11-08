@@ -26,6 +26,15 @@ async function envoyerMessage(texte) {
   formulaireMessage.
 }*/
 
+/*
+//PAR RAPPORT À CE CODE, IL FAUT EN PLUS FAIRE EN SORTE QU'ON VOIT UN CHANNEL POUR TOUS LES AMIS, DONC QU'UN CHANNEL (NOUVEL ELEMENT DE LA LISTE) EST CRÉÉ POUR LES NOUVEAUX AMIS
+async function chargerConversations() {
+*/
+
+
+
+
+
 
 
 /* 
@@ -40,43 +49,111 @@ Organisation du fichier :
 */
 
 
-// -- 1. Variables de l'état de la page
+/*
+Stockage local du navigateur (et gestion du thème).
+
+Deux types de stockage sont utilisés, avec des durées de vie différentes :
+  - localStorage   : survit à la fermeture du navigateur (préférence du thème)
+  - sessionStorage : propre à l'onglet, effacé à sa fermeture (salon courant)
+
+Ce fichier est chargé dans le <head> SANS `defer` : il s'exécute avant que la page ne s'affiche, ce qui permet d'appliquer le thème tout de suite.
+*/
 
 const Local = {
-  CLE_CONVERSATION_ACTUELLE: "cleConversationActuelle",
+  KEY_CURRENT_THEME: "keyCurrentTheme",
+  KEY_CURRENT_CHANNEL: "keyCurrentChannel",
 
-  lireConversationActuelle() {
+  // ---- Thème ("light", "dark" ou "system") ----
+
+  readCurrentTheme() {
+    // Le try/catch est nécessaire : l'accès au stockage peut être refusé.
     try {
-      return JSON.parse(sessionStorage.getItem(this.CLE_CONVERSATION_ACTUELLE));
-    } 
-    catch (error) {
+      var savedTheme = localStorage.getItem(this.KEY_CURRENT_THEME);
+      if (savedTheme) return savedTheme;
+      return "system";
+    } catch (error) {
+      return "system";
+    }
+  },
+
+  writeCurrentTheme(theme) {
+    localStorage.setItem(this.KEY_CURRENT_THEME, theme);
+    this.applyTheme(theme);
+  },
+
+  // Traduit le choix de la personne en un thème réel ("light" ou "dark") et le pose sur <html data-theme="...">. 
+  // Le CSS (base.css) fait le reste.
+  applyTheme(theme) {
+    let shouldUseDarkTheme = false;
+    let systemThemePreferenceToDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+    if (theme == "dark") {
+      shouldUseDarkTheme = true;
+    } else if (theme == "system") {
+      // "Automatique" : on suit la préférence du système d'exploitation (connu par le navigateur)
+      shouldUseDarkTheme = systemThemePreferenceToDark;
+    }
+
+    let themeToApply = shouldUseDarkTheme ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", themeToApply);
+  },
+
+  // ---- Salon courant (conservé pour survivre à un rechargement de la page) ----
+
+  readCurrentChannel() {
+    // Le stockage ne contient que du texte : on y range le salon sous forme de JSON (JSON.stringify) et on le reconvertit en objet à la lecture (JSON.parse).
+    try {
+      return JSON.parse(sessionStorage.getItem(this.KEY_CURRENT_CHANNEL));
+    } catch (error) {
       console.warn("Salon courant illisible, valeur ignorée.", error);
       return null;
     }
   },
 
-  ecrireConversationActuelle(conversation) {
+  writeCurrentChannel(channel) {
     try {
-      sessionStorage.setItem(this.CLE_CONVERSATION_ACTUELLE, JSON.stringify(conversation));
+      sessionStorage.setItem(this.KEY_CURRENT_CHANNEL, JSON.stringify(channel));
     } catch (error) {
       console.warn("Erreur dans la sauvegarde du salon courant.", error);
     }
   },
 
-  supprimerConversationActuelle() {
-    sessionStorage.removeItem(this.CLE_CONVERSATION_ACTUELLE);
+  deleteCurrentChannel() {
+    sessionStorage.removeItem(this.KEY_CURRENT_CHANNEL);
   },
 
-  // Appelée à la déconnexion : on oublie tout ce qui concerne la session.
+  // Appelée à la déconnexion : on oublie tout ce qui concerne la session. (Le thème, lui, est une préférence : il est dans localStorage et reste.)
   clearSession() {
     sessionStorage.clear();
   },
 }
 
+// -- Événements --
+
+// Si le thème est "Automatique" et que la personne change le thème de son système pendant que la page est ouverte, on se met à jour en direct.
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function() {
+  if (Local.readCurrentTheme() == "system") {
+    Local.applyTheme("system");
+  }
+});
 
 
+// -- Initialisation --
+
+Local.applyTheme(Local.readCurrentTheme());
+
+
+/*
+Couche "données" : toutes les requêtes vers les tables `channels` et `messages`.
+Le code de l'interface (chat.js) n'écrit jamais de requête lui-même : il appelle `Data.quelqueChose()`.
+
+Les requêtes sont autorisées (ou refusées) par les règles RLS définies dans schema.sql.
+*/
 
 const Data = {
+
+  // -- Lectures et écritures ponctuelles --
+
   async fetchChannels() {
     return await supabaseClient
     .from("channels")
@@ -157,41 +234,59 @@ const Data = {
 
 
 
+// -- 1. Variables de l'état de la page
+
 
 // Salon ouvert (objet { id, name, ... }) ou `null`. 
 // Cela permet de retrouver le même salon si la personne recharge la page sans la quitter ou si elle revient dessus après être allée dans les paramètres.
-let conversationActuelle = Local.lireConversationActuelle();
+let currentChannel = Local.readCurrentChannel();
 
 // Personne connectée. Reste `null` tant que la fonction init (appelé plus tard) n'a pas fini.
-let utilisateurActuel = null;
+let currentUser = null;
 
 // Pour stocker une fonction qui coupera l'écoute temps réel du salon ouvert (`null` si aucune écoute en cours).
-let couperEcouteMessage = null;
+let unsubscribeMessages = null;
 
 
 // -- 2. Éléments du DOM (Document Object Model)
 
 
-const inputChannel = document.getElementById("input-channel"); //jsp ça correspond a quoi dans notre code, fut peut etre ajouter qqchose en fait
-const champMessage = document.getElementById("texte-message");
+const inputChannel = document.getElementById("input-channel");
+const inputMessage = document.getElementById("input-message");
 
-const listeConversations = document.getElementById("conversations");
-const fil = document.getElementById("fil");
+const ulChannels = document.getElementById("ul-channels");
+const divMessages = document.getElementById("div-messages");
 
-const titreConversation = document.getElementById("titre-conversation");
+const spanChannelTitle = document.getElementById("span-channel-title");
 
 
 // -- 3. Événements
 
 
+document.getElementById("form-channel").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const name = inputChannel.value.trim();
+  if (!name) return;
+
+  const { error } = await Data.createChannel(name);
+  if (error) {
+    // Cas typique d'une erreur : un salon du même nom existe déjà (colonne `name` unique).
+    // On ne vide pas le champ pour que la personne puisse corriger sa saisie.
+    console.error("Impossible de créer le salon.", error);
+    return;
+  }
+  inputChannel.value = "";
+  // Pas besoin de rafraîchir la liste des salons ici : l'abonnement temps réel s'en charge.
+});
+
 document.getElementById("form-message").addEventListener("submit", async (event) => {
   event.preventDefault();
-  const content = champMessage.value.trim();
+  const content = inputMessage.value.trim();
   // Garde-fou : message vide alors on s'arrête dans la fonction (on retourne rien)
   if (!content) return;
 
-  const { error } = await Data.envoyerMessage(
-    conversationActuelle.id,
+  const { error } = await Data.sendMessage(
+    currentChannel.id,
     content,
     currentUser.email
   );
@@ -221,7 +316,7 @@ Auth.onSessionEnded(() => {
 
 // -- 4. Gestion de l'affichage des salons
 
-//PAR RAPPORT À CE CODE, IL FAUT EN PLUS FAIRE EN SORTE QU'ON VOIT UN CHANNEL POUR TOUS LES AMIS, DONC QU'UN CHANNEL (NOUVEL ELEMENT DE LA LISTE) EST CRÉÉ POUR LES NOUVEAUX AMIS
+
 async function loadChannels() {
   const { data: channels, error } = await Data.fetchChannels();
   if (error) {
@@ -244,7 +339,7 @@ function displayChannel(channel) {
   const buttonElement = document.createElement("button");
 
   // Marque le salon actuellement ouvert (p. ex. après un rechargement). Le CSS le met en évidence via le sélecteur [aria-current=true], ce qui sert aussi aux lecteurs d'écran (pour l'accessibilité).
-  if (conversationActuelle && channel.id == conversationActuelle.id) {
+  if (currentChannel && channel.id == currentChannel.id) {
     buttonElement.setAttribute("aria-current", "true");
   }
   buttonElement.className = "channel-item";
@@ -257,7 +352,7 @@ function displayChannel(channel) {
 
 function clearSelectedChannel() {
   Local.deleteCurrentChannel();
-  conversationActuelle = null;
+  currentChannel = null;
   document.querySelectorAll(".channel-item").forEach(element => {
     element.removeAttribute("aria-current");
   });
@@ -266,9 +361,9 @@ function clearSelectedChannel() {
 async function selectChannel(buttonElement, channel) {
   clearSelectedChannel();
   buttonElement.setAttribute("aria-current", "true");
-  conversationActuelle = channel;
-  Local.writeCurrentChannel(conversationActuelle);
-  showChannelTitle(conversationActuelle.name);
+  currentChannel = channel;
+  Local.writeCurrentChannel(currentChannel);
+  showChannelTitle(currentChannel.name);
   // arrête l'écoute de l'ancien salon
   unsubscribeMessages?.();
   unsubscribeMessages = Data.subscribeToMessages(channel.id, appendMessage);
@@ -285,7 +380,7 @@ function showChannelTitle(title) {
 
 
 async function loadMessages() {
-  const { data: messages, error } = await Data.fetchMessages(conversationActuelle.id);
+  const { data: messages, error } = await Data.fetchMessages(currentChannel.id);
   if (error) {
     console.error("Impossible de charger les messages.", error);
     return;
@@ -337,8 +432,8 @@ function scrollMessages() {
 
 
 // Affiche (et ouvre) tout de suite le titre du salon mémorisé (avant même la fin des requêtes).
-if (conversationActuelle) {
-  showChannelTitle(conversationActuelle.name);
+if (currentChannel) {
+  showChannelTitle(currentChannel.name);
 }
 
 async function init() {
@@ -354,9 +449,9 @@ async function init() {
   Data.subscribeToChannels(() => loadChannels());
 
   // Rechargement de la page avec un salon déjà ouvert : on rétablit son contenu (et l'abonnement aux messages en temps réel).
-  if (conversationActuelle) {
+  if (currentChannel) {
     unsubscribeMessages?.();
-    unsubscribeMessages = Data.subscribeToMessages(conversationActuelle.id, appendMessage);
+    unsubscribeMessages = Data.subscribeToMessages(currentChannel.id, appendMessage);
     await loadMessages();
   }
 }

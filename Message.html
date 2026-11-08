@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,55 +9,57 @@
   <title>Messages - Messages Kids</title>
   <link rel="stylesheet" href="Regles.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+
 </head>
 <body>
   <div class="app">
-    <aside class="historique">
-      <header class="profil">
-        <h1 id="mon-pseudo">Messages Kids</h1>
-        <button type="button" id="deconnexion">Déconnexion</button>
-      </header>
- 
-      <div class="entete-liste">
-        <h2>Mes amis</h2>
+
+    <!-- Liste des salons -->
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <h1>Salons</h1>
+        <a href="./settings.html">Paramètres</a>
       </div>
- 
-      <ul id="conversations" class="conversations"></ul>
-    </aside>
- 
-    <main class="conversation">
-      <header class="titre-conv">
-        <h2 id="titre-conversation">Choisis un ami</h2>
-      </header>
- 
-      <section id="fil" class="fil" aria-live="polite">
-        <p>Sélectionne un ami pour commencer.</p>
-      </section>
- 
-      <form id="form-message" class="saisie">
-        <textarea
-          id="texte-message"
-          placeholder="Écris ton message"
-          rows="1"
-          maxlength="2000"
-          aria-label="Message"
-          required
-        ></textarea>
-        <button type="submit">Envoyer</button>
+
+      <ul id="ul-channels"></ul>
+
+      <form id="form-channel" autocomplete="off">
+        <input type="text" id="input-channel" placeholder="Nom du nouveau salon" aria-label="Nom du nouveau salon" maxlength="40">
+        <button type="submit" class="btn">Créer</button>
       </form>
- 
-      <p id="statut-message" role="status"></p>
+    </aside>
+
+    <!-- Messages du salon ouvert -->
+    <main class="conversation">
+      <header class="conversation-head">
+        <button type="button" id="button-back" class="btn btn-ghost">Retour</button>
+        <span id="span-channel-title"></span>
+      </header>
+
+      <div class="placeholder">
+        <p>Choisis un salon dans la liste<br>ou crées-en un nouveau.</p>
+      </div>
+
+      <div id="div-messages" aria-live="polite"></div>
+
+      <form id="form-message" autocomplete="off">
+        <input type="text" id="input-message" placeholder="Écrire un message" aria-label="Message">
+        <button type="submit" class="btn">Envoyer</button>
+      </form>
     </main>
+
   </div>
- 
-  <script src="supabaseConfig.js"></script>
-  <script>
+    <script src="supabaseConfig.js"></script>
+    <script>
     // Déconnexion : on ferme la session et on retourne à la page de connexion
     document.querySelector("#deconnexion").addEventListener("click", async () => {
       await client.auth.signOut();
       window.location.href = "Connexion.html";
     });
-  </script>
-  <script src="scriptMessage.js"></script>
+    </script>
+    <script src="scriptMessage.js"></script>
+
 </body>
 </html>
