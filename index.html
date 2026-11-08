@@ -1,9 +1,17 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Messages Kids</title>
+
+  <script>
+    // Si un lien de réinitialisation de mot de passe arrive, sa l'envoie vers la page Reinitialiser.html
+    if (location.hash.includes("type=recovery") || location.hash.includes("error_code")) {
+      location.replace("Reinitialiser.html" + location.hash);
+    }
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
