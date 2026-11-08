@@ -1,65 +1,57 @@
-
-
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <title>Messages - Messages Kids</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="Regles.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-
-
 </head>
-<body>
+<body class="messagerie">
   <div class="app">
 
-    <!-- Liste des salons -->
+    <!-- Liste des conversations (une par ami) -->
     <aside class="sidebar">
       <div class="sidebar-head">
-        <h1>Salons</h1>
-        <a href="./settings.html">Paramètres</a>
+        <h1>Mes amis</h1>
+        <button type="button" id="deconnexion" class="btn btn-ghost">Déconnexion</button>
       </div>
 
-      <ul id="ul-channels"></ul>
-
       <form id="form-channel" autocomplete="off">
-        <input type="text" id="input-channel" placeholder="Nom du nouveau salon" aria-label="Nom du nouveau salon" maxlength="40">
-        <button type="submit" class="btn">Créer</button>
+        <input type="search" id="input-channel" placeholder="Chercher un ami" aria-label="Chercher un ami">
       </form>
+
+      <ul id="ul-channels"></ul>
     </aside>
 
-    <!-- Messages du salon ouvert -->
+    <!-- Conversation ouverte -->
     <main class="conversation">
       <header class="conversation-head">
         <button type="button" id="button-back" class="btn btn-ghost">Retour</button>
+        <span id="span-channel-avatar"></span>
         <span id="span-channel-title"></span>
       </header>
 
       <div class="placeholder">
-        <p>Choisis un salon dans la liste<br>ou crées-en un nouveau.</p>
+        <p>Choisis un ami dans la liste<br>pour discuter avec lui.</p>
       </div>
 
       <div id="div-messages" aria-live="polite"></div>
 
       <form id="form-message" autocomplete="off">
-        <input type="text" id="input-message" placeholder="Écrire un message" aria-label="Message">
+        <input type="text" id="input-message" placeholder="Écrire un message" aria-label="Message" maxlength="2000">
         <button type="submit" class="btn">Envoyer</button>
       </form>
     </main>
 
   </div>
-    <script src="supabaseConfig.js"></script>
-    <script>
-    // Déconnexion : on ferme la session et on retourne à la page de connexion
-    document.querySelector("#deconnexion").addEventListener("click", async () => {
-      await client.auth.signOut();
-      window.location.href = "Connexion.html";
-    });
-    </script>
-    <script src="scriptMessage.js"></script>
 
+  <script src="supabaseConfig.js"></script>
+  <script src="scriptMessage.js"></script>
 </body>
 </html>

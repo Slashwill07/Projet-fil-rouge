@@ -1,459 +1,525 @@
-/*let listeConversations = document.querySelector("#conversations");
-let titreConversation = document.querySelector("#titre-conversation");
-let fil = document.querySelector("#fil");
-const formulaireMessage = document.querySelector("#form-message");
-const champMessage = document.querySelector("#texte-message");
-const statutMessage = document.querySelector("#statut-message");
+/*
+Page des messages : liste des amis, affichage, envoi et réception en direct.
 
-document.getElementById("listeConversations").addEventListener("click", () => {
-  changerConversation(conversation);
-});
+Organisation du fichier :
+  1. outils (avatars, heures, mémoire du navigateur)
+  2. données (toutes les requêtes vers Supabase)
+  3. état de la page et éléments du DOM
+  4. liste des amis (colonne de gauche)
+  5. messages (colonne de droite)
+  6. événements
+  7. démarrage (init)
 
-document.getElementById("titreConversation")
-});
+Chaque ami = une conversation privée. La table `message` contient :
+  text            : le texte du message
+  create_by       : l'expéditeur (rempli automatiquement par la base)
+  destinataire_id : le destinataire
+Les règles de sécurité (RLS) font que chacun ne voit que les messages
+qu'il a envoyés ou reçus.
+*/
 
 
-document.getElementById("champMessage").addEventListener("click", () => {
-  envoyerMessage(champMessage);
-});
+// -- 1. Outils
 
-async function changerConversation(nouvelleConversation) {
-  titreConversation = nouvelleConversation.titre-conv;
 
+const FICHIERS_AVATARS = {
+  avatar1: "avatar1renard",
+  avatar2: "avatar2zebre",
+  avatar3: "avatar3perroquet",
+  avatar4: "avatar4hibou",
+  avatar5: "avatar5parresseux",
+  avatar6: "avatar6giraffe",
+  avatar7: "avatar7pingouin",
+  avatar8: "avatar8dinosaure",
+  avatar9: "avatar9lion",
+  avatar10: "avatar10ours",
+};
+
+// Retourne l'avatar d'un profil : l'image, ou la première lettre du prénom s'il n'en a pas.
+function creerAvatar(profil) {
+  const fichier = FICHIERS_AVATARS[profil.avatar];
+
+  if (fichier) {
+    const image = document.createElement("img");
+    image.className = "avatar";
+    image.src = "ressources/avatars/" + fichier + ".png";
+    image.alt = "";
+    return image;
+  }
+
+  const pastille = document.createElement("div");
+  pastille.className = "avatar";
+  pastille.textContent = (profil.prenom || "?").charAt(0).toUpperCase();
+  return pastille;
 }
 
-async function envoyerMessage(texte) {
-  formulaireMessage.
-}*/
+// Pour la liste des amis : l'heure si c'est aujourd'hui, sinon la date (ex. « 7 nov. »).
+function formaterQuand(iso) {
+  const date = new Date(iso);
+  if (date.toDateString() === new Date().toDateString()) {
+    return date.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  }
+  return date.toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
+}
 
-/*
-//PAR RAPPORT À CE CODE, IL FAUT EN PLUS FAIRE EN SORTE QU'ON VOIT UN CHANNEL POUR TOUS LES AMIS, DONC QU'UN CHANNEL (NOUVEL ELEMENT DE LA LISTE) EST CRÉÉ POUR LES NOUVEAUX AMIS
-async function chargerConversations() {
-*/
+// Pour les bulles : l'heure, avec la date si le message n'est pas d'aujourd'hui.
+function formaterHeureMessage(iso) {
+  const date = new Date(iso);
+  if (date.toDateString() === new Date().toDateString()) {
+    return date.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  }
+  return date.toLocaleString("fr-FR", {
+    day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"
+  });
+}
 
-
-
-
-
-
-
-/* 
-Page principale : liste des salons, affichage et envoi des messages.
-Organisation du fichier :
-  1. variables d'état   
-  2. éléments du DOM   
-  3. événements
-  4. salons            
-  5. messages          
-  6. démarrage (init)
-*/
-
-
-/*
-Stockage local du navigateur (et gestion du thème).
-
-Deux types de stockage sont utilisés, avec des durées de vie différentes :
-  - localStorage   : survit à la fermeture du navigateur (préférence du thème)
-  - sessionStorage : propre à l'onglet, effacé à sa fermeture (salon courant)
-
-Ce fichier est chargé dans le <head> SANS `defer` : il s'exécute avant que la page ne s'affiche, ce qui permet d'appliquer le thème tout de suite.
-*/
-
+// Mémoire du navigateur : retient l'ami ouvert si on recharge la page.
+// sessionStorage est propre à l'onglet et s'efface quand on le ferme.
 const Local = {
-  KEY_CURRENT_THEME: "keyCurrentTheme",
-  KEY_CURRENT_CHANNEL: "keyCurrentChannel",
+  CLE_AMI: "cleAmiCourant",
 
-  // ---- Thème ("light", "dark" ou "system") ----
-
-  readCurrentTheme() {
-    // Le try/catch est nécessaire : l'accès au stockage peut être refusé.
+  lireAmiCourant() {
     try {
-      var savedTheme = localStorage.getItem(this.KEY_CURRENT_THEME);
-      if (savedTheme) return savedTheme;
-      return "system";
-    } catch (error) {
-      return "system";
-    }
-  },
-
-  writeCurrentTheme(theme) {
-    localStorage.setItem(this.KEY_CURRENT_THEME, theme);
-    this.applyTheme(theme);
-  },
-
-  // Traduit le choix de la personne en un thème réel ("light" ou "dark") et le pose sur <html data-theme="...">. 
-  // Le CSS (base.css) fait le reste.
-  applyTheme(theme) {
-    let shouldUseDarkTheme = false;
-    let systemThemePreferenceToDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-    if (theme == "dark") {
-      shouldUseDarkTheme = true;
-    } else if (theme == "system") {
-      // "Automatique" : on suit la préférence du système d'exploitation (connu par le navigateur)
-      shouldUseDarkTheme = systemThemePreferenceToDark;
-    }
-
-    let themeToApply = shouldUseDarkTheme ? "dark" : "light";
-    document.documentElement.setAttribute("data-theme", themeToApply);
-  },
-
-  // ---- Salon courant (conservé pour survivre à un rechargement de la page) ----
-
-  readCurrentChannel() {
-    // Le stockage ne contient que du texte : on y range le salon sous forme de JSON (JSON.stringify) et on le reconvertit en objet à la lecture (JSON.parse).
-    try {
-      return JSON.parse(sessionStorage.getItem(this.KEY_CURRENT_CHANNEL));
-    } catch (error) {
-      console.warn("Salon courant illisible, valeur ignorée.", error);
+      return sessionStorage.getItem(this.CLE_AMI);
+    } catch (erreur) {
       return null;
     }
   },
 
-  writeCurrentChannel(channel) {
+  ecrireAmiCourant(id) {
     try {
-      sessionStorage.setItem(this.KEY_CURRENT_CHANNEL, JSON.stringify(channel));
-    } catch (error) {
-      console.warn("Erreur dans la sauvegarde du salon courant.", error);
+      sessionStorage.setItem(this.CLE_AMI, id);
+    } catch (erreur) {
+      console.warn("Impossible de retenir la conversation ouverte.", erreur);
     }
   },
 
-  deleteCurrentChannel() {
-    sessionStorage.removeItem(this.KEY_CURRENT_CHANNEL);
+  effacerAmiCourant() {
+    try {
+      sessionStorage.removeItem(this.CLE_AMI);
+    } catch (erreur) {
+      console.warn("Impossible d'oublier la conversation ouverte.", erreur);
+    }
   },
 
-  // Appelée à la déconnexion : on oublie tout ce qui concerne la session. (Le thème, lui, est une préférence : il est dans localStorage et reste.)
-  clearSession() {
-    sessionStorage.clear();
+  // Appelée à la déconnexion
+  effacerSession() {
+    try {
+      sessionStorage.clear();
+    } catch (erreur) {
+      console.warn("Impossible d'effacer la session.", erreur);
+    }
   },
-}
-
-// -- Événements --
-
-// Si le thème est "Automatique" et que la personne change le thème de son système pendant que la page est ouverte, on se met à jour en direct.
-window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function() {
-  if (Local.readCurrentTheme() == "system") {
-    Local.applyTheme("system");
-  }
-});
+};
 
 
-// -- Initialisation --
+// -- 2. Données (Supabase)
+// Le reste du fichier n'écrit jamais de requête : il appelle Data.quelqueChose().
 
-Local.applyTheme(Local.readCurrentTheme());
-
-
-/*
-Couche "données" : toutes les requêtes vers les tables `channels` et `messages`.
-Le code de l'interface (chat.js) n'écrit jamais de requête lui-même : il appelle `Data.quelqueChose()`.
-
-Les requêtes sont autorisées (ou refusées) par les règles RLS définies dans schema.sql.
-*/
 
 const Data = {
 
-  // -- Lectures et écritures ponctuelles --
-
-  async fetchChannels() {
-    return await supabaseClient
-    .from("channels")
-    .select("*")
-    .order("name");
+  // Tous les profils sauf le sien = la liste des amis
+  async chargerProfils(monId) {
+    return await client
+      .from("profils")
+      .select("id, prenom, avatar")
+      .neq("id", monId)
+      .order("prenom");
   },
 
-  // On n'envoie que `name` (`id`, `created_at` et `created_by` sont directement remplis avec des valeurs par défaut). 
+  // Les derniers messages envoyés ou reçus, du plus récent au plus ancien
+  // (sert à afficher le dernier message de chaque conversation).
+  async chargerDerniersMessages(monId) {
+    return await client
+      .from("message")
+      .select("id, text, created_at, create_by, destinataire_id")
+      .or("create_by.eq." + monId + ",destinataire_id.eq." + monId)
+      .order("created_at", { ascending: false })
+      .limit(300);
+  },
+
+  // Les 50 derniers messages entre moi et un ami.
+  // On trie du plus récent au plus ancien AVANT de limiter pour garder les derniers :
+  // le tableau arrive donc « à l'envers », on le remet dans l'ordre avec reverse().
+  async chargerConversation(monId, amiId) {
+    return await client
+      .from("message")
+      .select("id, text, created_at, create_by, destinataire_id")
+      .or(
+        "and(create_by.eq." + monId + ",destinataire_id.eq." + amiId + ")," +
+        "and(create_by.eq." + amiId + ",destinataire_id.eq." + monId + ")"
+      )
+      .order("created_at", { ascending: false })
+      .limit(50);
+  },
+
+  // `create_by` n'est volontairement pas envoyé : la base le remplit avec
+  // l'identifiant de la personne connectée (auth.uid()), impossible de le falsifier.
   // `.select().single()` demande de retourner la ligne créée.
-  async createChannel(name) {
-    return await supabaseClient
-    .from("channels")
-    .insert({ name })
-    .select()
-    .single();
+  async envoyerMessage(amiId, texte) {
+    return await client
+      .from("message")
+      .insert({ text: texte, destinataire_id: amiId })
+      .select()
+      .single();
   },
 
-  // Pour obtenir les 50 DERNIERS messages, on trie du plus récent au plus ancien AVANT de limiter. 
-  // Le tableau arrive donc "à l'envers" : c'est chat.js qui le remet dans l'ordre chronologique avec .reverse().
-  async fetchMessages(channelId) {
-    return await supabaseClient
-    .from("messages")
-    .select("id, content, created_at, user_id, username")
-    .eq("channel_id", channelId)
-    .order("created_at", { ascending: false })
-    .limit(50);
+  // Écoute en direct : Supabase nous prévient dès qu'un message m'est adressé.
+  // Retourne une fonction pour arrêter l'écoute.
+  ecouterMessages(monId, quandNouveau) {
+    const abonnement = client
+      .channel("messages-recus-" + monId)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "message",
+          filter: "destinataire_id=eq." + monId,
+        },
+        (payload) => quandNouveau(payload.new)
+      )
+      .subscribe((statut) => {
+        if (statut === "CHANNEL_ERROR" || statut === "TIMED_OUT") {
+          console.warn("Écoute des messages en direct impossible :", statut);
+        }
+      });
+
+    return () => client.removeChannel(abonnement);
   },
-
-  // `user_id` n'est volontairement pas envoyé : la base le remplit avec l'identifiant de la personne connectée (auth.uid()).
-  async sendMessage(channelId, content, username) {
-    return await supabaseClient
-    .from("messages")
-    .insert({
-      channel_id: channelId,
-      content,
-      username
-    });
-  },
-
-  // -- Temps réel (Realtime) --
-  
-  // Supabase nous prévient quand une ligne est insérée. On n'a donc pas besoin de redemander les données.
-  subscribeToChannels(onNewChannel) {
-    supabaseClient
-    .channel("channels-realtime")
-    .on(
-      "postgres_changes",
-      {
-        event: "INSERT",
-        schema: "public",
-        table: "channels"
-      },
-      (payload) => onNewChannel(payload.new)
-    )
-    .subscribe();
-  },
-
-  // Le `filter` limite les notifications aux messages du salon ouvert.
-  // La fonction retournée sert à se désabonner : indispensable quand on change de salon, sinon on continuerait à recevoir les messages de l'ancien.
-  subscribeToMessages(channelId, onNewMessage) {
-    const subscription = supabaseClient
-    .channel("messages-" + channelId)
-    .on(
-      "postgres_changes",
-      {
-        event: "INSERT",
-        schema: "public",
-        table: "messages",
-        filter: "channel_id=eq." + channelId,
-      },
-      (payload) => onNewMessage(payload.new)
-    )
-    .subscribe();
-
-    return () => supabaseClient.removeChannel(subscription);
-  },
-}
+};
 
 
-
-// -- 1. Variables de l'état de la page
-
-
-// Salon ouvert (objet { id, name, ... }) ou `null`. 
-// Cela permet de retrouver le même salon si la personne recharge la page sans la quitter ou si elle revient dessus après être allée dans les paramètres.
-let currentChannel = Local.readCurrentChannel();
-
-// Personne connectée. Reste `null` tant que la fonction init (appelé plus tard) n'a pas fini.
-let currentUser = null;
-
-// Pour stocker une fonction qui coupera l'écoute temps réel du salon ouvert (`null` si aucune écoute en cours).
-let unsubscribeMessages = null;
+// -- 3. État de la page et éléments du DOM
 
 
-// -- 2. Éléments du DOM (Document Object Model)
-
+let moi = null;          // la personne connectée
+let amis = [];           // les autres profils : { id, prenom, avatar }
+let amiOuvert = null;    // l'ami dont la conversation est ouverte (ou null)
+let apercus = {};        // id de l'ami -> dernier message de la conversation
+let nonLus = {};         // id de l'ami -> nombre de nouveaux messages non ouverts
+let arreterEcoute = null;
+const idsAffiches = new Set(); // évite d'afficher deux fois le même message
 
 const inputChannel = document.getElementById("input-channel");
-const inputMessage = document.getElementById("input-message");
-
 const ulChannels = document.getElementById("ul-channels");
-const divMessages = document.getElementById("div-messages");
-
+const spanChannelAvatar = document.getElementById("span-channel-avatar");
 const spanChannelTitle = document.getElementById("span-channel-title");
+const divMessages = document.getElementById("div-messages");
+const formMessage = document.getElementById("form-message");
+const inputMessage = document.getElementById("input-message");
+const boutonEnvoyer = formMessage.querySelector("button");
 
 
-// -- 3. Événements
+// -- 4. Liste des amis
 
 
-document.getElementById("form-channel").addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const name = inputChannel.value.trim();
-  if (!name) return;
+async function chargerAmis() {
+  const [reponseAmis, reponseMessages] = await Promise.all([
+    Data.chargerProfils(moi.id),
+    Data.chargerDerniersMessages(moi.id),
+  ]);
 
-  const { error } = await Data.createChannel(name);
-  if (error) {
-    // Cas typique d'une erreur : un salon du même nom existe déjà (colonne `name` unique).
-    // On ne vide pas le champ pour que la personne puisse corriger sa saisie.
-    console.error("Impossible de créer le salon.", error);
+  if (reponseAmis.error) {
+    console.error("Impossible de charger les amis.", reponseAmis.error);
     return;
   }
-  inputChannel.value = "";
-  // Pas besoin de rafraîchir la liste des salons ici : l'abonnement temps réel s'en charge.
-});
+  amis = reponseAmis.data.map((profil) => ({ ...profil, prenom: profil.prenom || "Ami" }));
 
-document.getElementById("form-message").addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const content = inputMessage.value.trim();
-  // Garde-fou : message vide alors on s'arrête dans la fonction (on retourne rien)
-  if (!content) return;
-
-  const { error } = await Data.sendMessage(
-    currentChannel.id,
-    content,
-    currentUser.email
-  );
-  if (error) {
-    console.error(error.code, error.message);
+  apercus = {};
+  if (reponseMessages.error) {
+    console.error("Impossible de charger les derniers messages.", reponseMessages.error);
     return;
   }
-  // On vide le champ seulement si l'envoi a réussi. Le message s'affichera via l'abonnement temps réel
-  inputMessage.value = "";
-});
-
-// Bouton « Retour » (visible seulement sur petit écran) : on ferme le salon en cours (la vue des messages).
-document.getElementById("button-back").addEventListener("click" , () => {
-  unsubscribeMessages?.();   // `?.()` : appelle la fonction seulement si elle existe (si la variable n'est pas `null`)
-  unsubscribeMessages = null;
-  divMessages.replaceChildren();
-  clearSelectedChannel();
-  document.body.classList.remove("open"); // le CSS affiche/masque les panneaux selon cette classe
-});
-
-// Redirige vers la connexion si la personne n'est pas (ou plus) connectée.
-Auth.onSessionEnded(() => {
-  Local.clearSession();
-  window.location.replace("./signin.html");
-});
-
-
-// -- 4. Gestion de l'affichage des salons
-
-
-async function loadChannels() {
-  const { data: channels, error } = await Data.fetchChannels();
-  if (error) {
-    console.error("Impossible de charger les salons.", error);
-    return;
-  }
-
-  // On vide la liste avant de la remplir
-  ulChannels.replaceChildren();
-  
-  channels.forEach(channel => {
-    displayChannel(channel);
+  // Du plus récent au plus ancien : le premier message trouvé pour un ami
+  // est donc le dernier de sa conversation.
+  reponseMessages.data.forEach((message) => {
+    const autreId = message.create_by === moi.id ? message.destinataire_id : message.create_by;
+    if (!apercus[autreId]) apercus[autreId] = message;
   });
 }
 
-// Construit <li><button>…</button></li> avec createElement.
-// Utilisation de textContent (et non innerHTML) : le texte est traité comme du texte brut (ce qui empêche qu'un nom de salon contenant du HTML ne soit exécuté, faille XSS).
-function displayChannel(channel) {
+function texteApercu(message) {
+  if (!message) return "Dis bonjour !";
+  return (message.create_by === moi.id ? "Toi : " : "") + message.text;
+}
+
+// Les conversations avec un message d'abord (la plus récente en haut), puis les autres par prénom.
+function trierAmis(a, b) {
+  const quandA = apercus[a.id] ? new Date(apercus[a.id].created_at) : null;
+  const quandB = apercus[b.id] ? new Date(apercus[b.id].created_at) : null;
+
+  if (quandA && quandB) return quandB - quandA;
+  if (quandA) return -1;
+  if (quandB) return 1;
+  return a.prenom.localeCompare(b.prenom);
+}
+
+function afficherAmis() {
+  const recherche = inputChannel.value.trim().toLowerCase();
+  const visibles = amis
+    .filter((ami) => ami.prenom.toLowerCase().includes(recherche))
+    .sort(trierAmis);
+
+  ulChannels.replaceChildren();
+
+  if (visibles.length === 0) {
+    const vide = document.createElement("li");
+    vide.className = "liste-vide";
+    vide.textContent = amis.length === 0 ? "Aucun ami pour l'instant." : "Aucun ami trouvé.";
+    ulChannels.appendChild(vide);
+    return;
+  }
+
+  visibles.forEach(afficherAmi);
+}
+
+// Construit <li><button>…</button></li>.
+// textContent (et non innerHTML) : le texte reste du texte brut, aucune faille XSS.
+function afficherAmi(ami) {
   const liElement = document.createElement("li");
   const buttonElement = document.createElement("button");
+  buttonElement.type = "button";
+  buttonElement.className = "channel-item";
 
-  // Marque le salon actuellement ouvert (p. ex. après un rechargement). Le CSS le met en évidence via le sélecteur [aria-current=true], ce qui sert aussi aux lecteurs d'écran (pour l'accessibilité).
-  if (currentChannel && channel.id == currentChannel.id) {
+  // Marque la conversation ouverte (le CSS la met en évidence avec [aria-current=true])
+  if (amiOuvert && amiOuvert.id === ami.id) {
     buttonElement.setAttribute("aria-current", "true");
   }
-  buttonElement.className = "channel-item";
-  buttonElement.textContent = "# " + channel.name;
-  buttonElement.addEventListener("click", async () => selectChannel(buttonElement, channel));
+
+  const texte = document.createElement("div");
+  texte.className = "channel-text";
+  const nom = document.createElement("span");
+  nom.className = "channel-name";
+  nom.textContent = ami.prenom;
+  const apercu = document.createElement("span");
+  apercu.className = "channel-apercu";
+  apercu.textContent = texteApercu(apercus[ami.id]);
+  texte.append(nom, apercu);
+
+  const infos = document.createElement("div");
+  infos.className = "channel-meta";
+  const dernier = apercus[ami.id];
+  if (dernier) {
+    const heure = document.createElement("time");
+    heure.dateTime = dernier.created_at;
+    heure.textContent = formaterQuand(dernier.created_at);
+    infos.appendChild(heure);
+  }
+  if (nonLus[ami.id] > 0) {
+    const badge = document.createElement("span");
+    badge.className = "badge";
+    badge.textContent = nonLus[ami.id];
+    infos.appendChild(badge);
+  }
+
+  buttonElement.append(creerAvatar(ami), texte, infos);
+  buttonElement.addEventListener("click", () => ouvrirAmi(ami));
 
   liElement.appendChild(buttonElement);
   ulChannels.appendChild(liElement);
 }
 
-function clearSelectedChannel() {
-  Local.deleteCurrentChannel();
-  currentChannel = null;
-  document.querySelectorAll(".channel-item").forEach(element => {
-    element.removeAttribute("aria-current");
-  });
+async function ouvrirAmi(ami) {
+  amiOuvert = ami;
+  Local.ecrireAmiCourant(ami.id);
+  nonLus[ami.id] = 0;
+
+  spanChannelAvatar.replaceChildren(creerAvatar(ami));
+  spanChannelTitle.textContent = ami.prenom;
+  document.body.classList.add("open"); // le CSS affiche/masque les panneaux selon cette classe
+
+  afficherAmis();
+  divMessages.replaceChildren();
+  idsAffiches.clear();
+  await chargerMessages();
+
+  // Sur téléphone, on évite d'ouvrir le clavier tout de suite
+  if (window.matchMedia("(min-width: 701px)").matches) {
+    inputMessage.focus();
+  }
 }
 
-async function selectChannel(buttonElement, channel) {
-  clearSelectedChannel();
-  buttonElement.setAttribute("aria-current", "true");
-  currentChannel = channel;
-  Local.writeCurrentChannel(currentChannel);
-  showChannelTitle(currentChannel.name);
-  // arrête l'écoute de l'ancien salon
-  unsubscribeMessages?.();
-  unsubscribeMessages = Data.subscribeToMessages(channel.id, appendMessage);
-  await loadMessages();
-}
-
-function showChannelTitle(title) {
-  spanChannelTitle.textContent = "# " + title;
-  document.body.classList.add("open");
+function fermerConversation() {
+  amiOuvert = null;
+  Local.effacerAmiCourant();
+  divMessages.replaceChildren();
+  idsAffiches.clear();
+  spanChannelAvatar.replaceChildren();
+  spanChannelTitle.textContent = "";
+  document.body.classList.remove("open");
+  afficherAmis();
 }
 
 
-// -- 5. Gestion de l'affichage des messages
+// -- 5. Messages
 
 
-async function loadMessages() {
-  const { data: messages, error } = await Data.fetchMessages(currentChannel.id);
+async function chargerMessages() {
+  const ami = amiOuvert;
+  const { data: messages, error } = await Data.chargerConversation(moi.id, ami.id);
+
+  // La personne a changé d'ami pendant le chargement : on ne touche plus à l'écran
+  if (ami !== amiOuvert) return;
+
   if (error) {
     console.error("Impossible de charger les messages.", error);
     return;
   }
+
   divMessages.replaceChildren();
-  // fetchMessages retourne les messages du plus récent au plus ancien (pour que limit(50) garde les derniers) : on les remet dans l'ordre chronologique avec reverse(), puis on les parcourt avec forEach().
-  messages.reverse().forEach(message => {
-    displayMessage(message);
-  });
-  scrollMessages();
+  idsAffiches.clear();
+  // Les messages arrivent du plus récent au plus ancien : reverse() les remet dans l'ordre
+  messages.reverse().forEach(afficherMessage);
+  defiler();
 }
 
-// Appelée par l'abonnement temps réel pour chaque nouveau message.
-function appendMessage(message) {
-  displayMessage(message);
-  scrollMessages();
-}
+// Construit <article><div class="corps"><header/><p/><time/></div></article>
+// (avec l'avatar de l'ami devant pour les messages reçus).
+function afficherMessage(message) {
+  if (idsAffiches.has(message.id)) return;
+  idsAffiches.add(message.id);
 
-function displayMessage(message) {
+  const envoye = message.create_by === moi.id;
+
   const articleElement = document.createElement("article");
-  const headerElement = document.createElement("header");
+  const corps = document.createElement("div");
+  corps.className = "corps";
   const pElement = document.createElement("p");
   const timeElement = document.createElement("time");
 
-  // Les messages de la personne connectée sont alignés à droite (avec la classe .sent).
-  if (message.user_id == currentUser.id) {
-    articleElement.classList.add("sent");
-  }
-  headerElement.textContent = message.username;
-  pElement.textContent = message.content;
-  // "2026-10-29T14:05:09.123+00:00" devient "2026-10-29 14:05:09" (affichage simple, en UTC).
-  // L'attribut datetime garde la valeur complète, lisible par les machines.
-  timeElement.textContent = message.created_at.slice(0, 19).replace('T', ' ');
-  timeElement.setAttribute('datetime', message.created_at);
+  pElement.textContent = message.text;
+  timeElement.textContent = formaterHeureMessage(message.created_at);
+  timeElement.dateTime = message.created_at;
 
-  articleElement.appendChild(headerElement);
-  articleElement.appendChild(pElement);
-  articleElement.appendChild(timeElement);
+  if (envoye) {
+    // Les messages de la personne connectée sont à droite (classe .sent)
+    articleElement.classList.add("sent");
+  } else {
+    const headerElement = document.createElement("header");
+    headerElement.textContent = amiOuvert.prenom;
+    articleElement.appendChild(creerAvatar(amiOuvert));
+    corps.appendChild(headerElement);
+  }
+
+  corps.append(pElement, timeElement);
+  articleElement.appendChild(corps);
   divMessages.appendChild(articleElement);
 }
 
-// Fait défiler jusqu'au bas : on voit toujours le dernier message.
-function scrollMessages() {
+// Fait défiler jusqu'en bas : on voit toujours le dernier message.
+function defiler() {
   divMessages.scrollTop = divMessages.scrollHeight;
 }
 
+// Appelée par l'écoute en direct à chaque message qu'on reçoit.
+async function recevoirMessage(message) {
+  const amiId = message.create_by;
 
-// -- 6. Vérifications et chargements (init)
+  // Expéditeur inconnu (compte créé depuis l'ouverture de la page) : on recharge la liste
+  if (!amis.some((ami) => ami.id === amiId)) {
+    await chargerAmis();
+  }
+  apercus[amiId] = message;
 
-
-// Affiche (et ouvre) tout de suite le titre du salon mémorisé (avant même la fin des requêtes).
-if (currentChannel) {
-  showChannelTitle(currentChannel.name);
+  if (amiOuvert && amiOuvert.id === amiId) {
+    afficherMessage(message);
+    defiler();
+  } else {
+    nonLus[amiId] = (nonLus[amiId] || 0) + 1;
+  }
+  afficherAmis();
 }
 
-async function init() {
-  const { user } = await Auth.getUser();
-  // Garde-fou : sans personne connectée, displayMessage (qui lit currentUser.id) planterait. Inutile de rediriger (vers signin.html) ici : onSessionEnded s'en occupe déjà.
-  if (!user) return;
-  currentUser = user;
 
-  await loadChannels();
-  
-  // Quand un salon est créé (par n'importe qui), on recharge la liste.
-  // Plus simple que d'insérer un seul élément, et le tri alphabétique est respecté.
-  Data.subscribeToChannels(() => loadChannels());
+// -- 6. Événements
 
-  // Rechargement de la page avec un salon déjà ouvert : on rétablit son contenu (et l'abonnement aux messages en temps réel).
-  if (currentChannel) {
-    unsubscribeMessages?.();
-    unsubscribeMessages = Data.subscribeToMessages(currentChannel.id, appendMessage);
-    await loadMessages();
+
+formMessage.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const texte = inputMessage.value.trim();
+  // Garde-fou : message vide ou aucune conversation ouverte
+  if (!texte || !amiOuvert) return;
+
+  const ami = amiOuvert;
+  boutonEnvoyer.disabled = true;
+  const { data: message, error } = await Data.envoyerMessage(ami.id, texte);
+  boutonEnvoyer.disabled = false;
+
+  if (error) {
+    console.error("Impossible d'envoyer le message.", error);
+    alert("Impossible d'envoyer ton message : " + error.message);
+    return;
   }
+
+  // On vide le champ seulement si l'envoi a réussi
+  inputMessage.value = "";
+  apercus[ami.id] = message;
+  if (amiOuvert === ami) {
+    afficherMessage(message);
+    defiler();
+  }
+  afficherAmis();
+  inputMessage.focus();
+});
+
+// Recherche : on filtre la liste des amis pendant qu'on écrit
+inputChannel.addEventListener("input", afficherAmis);
+document.getElementById("form-channel").addEventListener("submit", (event) => {
+  event.preventDefault();
+});
+
+// Bouton « Retour » (visible seulement sur téléphone) : on ferme la conversation
+document.getElementById("button-back").addEventListener("click", fermerConversation);
+
+// Déconnexion : on ferme la session et on retourne à la page de connexion
+document.getElementById("deconnexion").addEventListener("click", async () => {
+  arreterEcoute?.(); // `?.()` : appelle la fonction seulement si elle existe
+  await client.auth.signOut();
+  Local.effacerSession();
+  window.location.href = "Connexion.html";
+});
+
+// Si la session se termine (autre onglet, session expirée), retour à la connexion
+client.auth.onAuthStateChange((evenement) => {
+  if (evenement === "SIGNED_OUT") {
+    Local.effacerSession();
+    window.location.replace("Connexion.html");
+  }
+});
+
+
+// -- 7. Démarrage (init)
+
+
+async function init() {
+  const { data: { user }, error } = await client.auth.getUser();
+
+  // Pas connecté (ou session périmée) : retour à la connexion
+  if (error || !user) {
+    await client.auth.signOut();
+    window.location.replace("Connexion.html");
+    return;
+  }
+  moi = user;
+
+  // Donne à l'écoute en direct le jeton de la personne connectée
+  try {
+    const { data: { session } } = await client.auth.getSession();
+    await client.realtime.setAuth(session.access_token);
+  } catch (erreur) {
+    console.warn("Impossible de transmettre la session à l'écoute en direct.", erreur);
+  }
+
+  await chargerAmis();
+  afficherAmis();
+  arreterEcoute = Data.ecouterMessages(moi.id, recevoirMessage);
+
+  // Rechargement de la page avec une conversation déjà ouverte : on la rouvre
+  const idMemorise = Local.lireAmiCourant();
+  const ami = amis.find((a) => a.id === idMemorise);
+  if (ami) await ouvrirAmi(ami);
 }
 
 init();

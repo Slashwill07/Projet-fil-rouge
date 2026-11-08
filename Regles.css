@@ -5,10 +5,8 @@
 :root {
   --fond: hsla(232, 100%, 34%, 0.655);
   --panneau: hsl(219, 29%, 12%);
-  --bordure: hsl(0, 0%, 5%);
   --texte: #eef0f6;
   --texte-doux: #9aa3b5;
-  --accent: #4a5cf5;
   --lilas: #d9ccff;
 }
  
@@ -383,167 +381,370 @@ input[type="image"]:hover {
  
  
 /* =====================================================
-   Page des messages
+   Page des messages : liste d'amis à gauche, conversation à droite
+   body class="messagerie" ; la classe "open" est ajoutée par le JS
+   quand une conversation est ouverte
    ===================================================== */
- 
+
+.messagerie {
+  --violet: #7c5cf0;
+  --violet-clair: #e9e4ff;
+  --violet-pale: #f3f0ff;
+  --bulle-recue: #efeff4;
+  --bulle-envoyee: #ddd5ff;
+  --trait: #e6e6ee;
+  --encre: #2b3340;
+  --encre-douce: #6b7280;
+
+  min-height: 100vh;
+  padding: 16px;
+  color: var(--encre);
+  font-family: "Inter", ui-rounded, "Segoe UI", system-ui, sans-serif;
+  background:
+    radial-gradient(circle at 0% 100%, rgba(122, 63, 240, 0.45) 0, transparent 45%),
+    radial-gradient(circle at 100% 15%, rgba(245, 168, 245, 0.5) 0, transparent 40%),
+    #f4f7f7;
+  background-attachment: fixed;
+}
+
 .app {
-  display: flex;
-  height: 100vh;
-  height: 100dvh;
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  width: min(100%, 1100px);
+  height: calc(100vh - 32px);
+  height: calc(100dvh - 32px);
+  margin: 0 auto;
   overflow: hidden;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 22px;
+  box-shadow: 0 30px 60px rgba(60, 60, 120, 0.2);
 }
- 
-/* Colonne de gauche */
- 
-.historique {
-  width: 360px;
-  max-width: 40%;
-  min-width: 260px;
+
+/* ---------- Boutons ---------- */
+
+.btn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 12px;
+  background: var(--violet);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.15s;
+}
+
+.btn:hover {
+  filter: brightness(1.1);
+}
+
+.btn-ghost {
+  padding: 6px 12px;
+  background: var(--violet-pale);
+  color: var(--violet);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* ---------- Avatar (image ou initiale) ---------- */
+
+.avatar {
+  width: 48px;
+  height: 48px;
   flex-shrink: 0;
-  padding: 20px 12px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  border-right: 1px solid var(--bordure);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--violet-clair);
+  color: var(--violet);
+  font-weight: 700;
 }
- 
-.profil {
+
+/* ---------- Colonne de gauche : les amis ---------- */
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-right: 1px solid var(--trait);
+}
+
+.sidebar-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  padding: 0 4px 16px;
+  padding: 20px 20px 12px;
 }
- 
-.profil h1 {
-  min-width: 0;
-  font-size: 1.3rem;
-  overflow-wrap: anywhere;
+
+.sidebar-head h1 {
+  font-size: 1.1rem;
+  font-weight: 700;
 }
- 
-.profil button {
-  flex-shrink: 0;
-  padding: 6px 14px;
+
+#form-channel {
+  padding: 0 16px 12px;
+}
+
+.sidebar input[type="search"] {
+  width: 100%;
+  padding: 10px 14px;
+  color: var(--encre);
+  background: var(--violet-pale);
+  border: 1px solid transparent;
+  border-radius: 12px;
+}
+
+.sidebar input[type="search"]:focus {
+  outline: none;
+  border-color: var(--violet);
+}
+
+#ul-channels {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.channel-item {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  text-align: left;
+  background: none;
   border: none;
-  border-radius: 999px;
-  background: var(--panneau);
-  font-size: 0.9rem;
+  border-bottom: 1px solid var(--trait);
+  border-left: 3px solid transparent;
   cursor: pointer;
 }
- 
-.profil button:hover {
-  filter: brightness(1.2);
+
+.channel-item:hover {
+  background: var(--violet-pale);
 }
- 
-.entete-liste {
-  padding: 12px 4px;
+
+.channel-item[aria-current="true"] {
+  background: var(--violet-clair);
+  border-left-color: var(--violet);
 }
- 
-.entete-liste h2 {
-  font-size: 1rem;
+
+.channel-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
- 
-/* Colonne de droite */
- 
+
+.channel-name {
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.channel-apercu {
+  overflow: hidden;
+  font-size: 0.85rem;
+  color: var(--encre-douce);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.channel-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--encre-douce);
+}
+
+.badge {
+  min-width: 20px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--violet);
+  color: white;
+  font-weight: 700;
+  text-align: center;
+}
+
+.liste-vide {
+  padding: 24px 20px;
+  text-align: center;
+  color: var(--encre-douce);
+}
+
+/* ---------- Colonne de droite : la conversation ---------- */
+
 .conversation {
   display: flex;
-  flex: 1;
   flex-direction: column;
   min-width: 0;
   min-height: 0;
 }
- 
-.titre-conv {
+
+/* Rien n'est ouvert : seul le message d'accueil est visible */
+.conversation-head,
+#div-messages,
+#form-message {
+  display: none;
+}
+
+.placeholder {
+  flex: 1;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  line-height: 1.5;
+  color: var(--encre-douce);
+}
+
+/* Une conversation est ouverte */
+.messagerie.open .conversation-head,
+.messagerie.open #div-messages,
+.messagerie.open #form-message {
+  display: flex;
+}
+
+.messagerie.open .placeholder {
+  display: none;
+}
+
+.conversation-head {
   align-items: center;
   gap: 12px;
   padding: 14px 24px;
-  border-bottom: 1px solid var(--bordure);
+  border-bottom: 1px solid var(--trait);
+  font-weight: 700;
 }
- 
-.titre-conv .avatar {
+
+.conversation-head .avatar {
   width: 40px;
   height: 40px;
-  font-size: 1.3rem;
 }
- 
-.titre-conv h2 {
-  min-width: 0;
-  font-size: 1.05rem;
-  overflow-wrap: anywhere;
-}
- 
-/* Fil des messages */
- 
-.fil {
+
+#span-channel-avatar {
   display: flex;
+}
+
+#span-channel-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Le bouton « Retour » n'existe que sur téléphone */
+#button-back {
+  display: none;
+}
+
+/* ---------- Messages ---------- */
+
+#div-messages {
   flex: 1;
   flex-direction: column;
-  gap: 8px;
+  gap: 14px;
   min-height: 0;
-  padding: 24px;
+  padding: 20px 24px;
   overflow-x: hidden;
   overflow-y: auto;
-  overflow-wrap: anywhere;
-  scroll-behavior: smooth;
 }
- 
-.fil p {
-  max-width: 60%;
-  padding: 10px 16px;
-  border-radius: 20px;
+
+#div-messages article {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  max-width: 78%;
+}
+
+#div-messages article.sent {
+  align-self: flex-end;
+}
+
+#div-messages .avatar {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 18px;
+  font-size: 0.8rem;
+}
+
+#div-messages .corps {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+}
+
+#div-messages article.sent .corps {
+  align-items: flex-end;
+}
+
+#div-messages header {
+  padding-left: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--encre-douce);
+}
+
+#div-messages p {
+  padding: 10px 14px;
+  border-radius: 18px;
+  background: var(--bulle-recue);
   line-height: 1.4;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
- 
-.recu {
-  align-self: flex-start;
-  background: var(--panneau);
+
+#div-messages article.sent p {
+  background: var(--bulle-envoyee);
 }
- 
-.envoye {
-  align-self: flex-end;
-  background: var(--accent);
+
+#div-messages time {
+  padding: 0 4px;
+  font-size: 0.7rem;
+  color: var(--encre-douce);
 }
- 
-/* Formulaire d'envoi */
- 
-.saisie {
-  display: flex;
+
+/* ---------- Champ d'envoi ---------- */
+
+#form-message {
   align-items: center;
   gap: 10px;
-  margin: 16px 24px 24px;
-  padding: 8px 8px 8px 18px;
-  border: 1px solid var(--bordure);
-  border-radius: 999px;
+  margin: 12px 20px 20px;
+  padding: 6px 6px 6px 16px;
+  background: white;
+  border: 1px solid #d9d9e3;
+  border-radius: 14px;
 }
- 
-.saisie textarea {
+
+#form-message:focus-within {
+  border-color: var(--violet);
+}
+
+#form-message input[type="text"] {
   flex: 1;
-  width: 100%;
-  min-width: 0;
-  min-height: 24px;
-  max-height: 140px;
-  resize: vertical;
-  border: none;
-  outline: none;
-  background: transparent;
-  color: var(--texte);
   padding: 8px 0;
-}
- 
-.saisie button {
-  flex-shrink: 0;
-  padding: 10px 20px;
+  color: var(--encre);
+  background: transparent;
   border: none;
-  border-radius: 999px;
-  background: var(--accent);
-  color: white;
-  font-weight: 700;
-  cursor: pointer;
+  border-radius: 0;
 }
- 
-.saisie button:hover {
-  filter: brightness(1.1);
+
+#form-message input[type="text"]:focus-visible {
+  outline: none;
+}
+
+#form-message input::placeholder {
+  color: #9b93b8;
 }
  
  
@@ -552,21 +753,16 @@ input[type="image"]:hover {
    ===================================================== */
  
 @media (max-width: 900px) {
-  .historique {
-    width: 300px;
-    min-width: 240px;
+  .app {
+    grid-template-columns: 280px minmax(0, 1fr);
   }
- 
-  .titre-conv {
+
+  .conversation-head {
     padding: 14px 16px;
   }
- 
-  .fil {
-    padding: 18px;
-  }
- 
-  .saisie {
-    margin: 12px 16px 16px;
+
+  #div-messages {
+    padding: 18px 16px;
   }
 }
  
@@ -594,36 +790,55 @@ input[type="image"]:hover {
     width: min(28vw, 100px);
     height: auto;
   }
- 
-  .historique {
-    width: 100%;
-    max-width: none;
-    min-width: 0;
+
+  /* Messagerie : un seul panneau à la fois (la liste, ou la conversation ouverte) */
+  .messagerie {
+    padding: 0;
+  }
+
+  .app {
+    grid-template-columns: minmax(0, 1fr);
+    height: 100vh;
+    height: 100dvh;
+    border: none;
+    border-radius: 0;
+  }
+
+  .sidebar {
     border-right: none;
   }
- 
-  .titre-conv {
-    gap: 8px;
+
+  .conversation {
+    display: none;
+  }
+
+  .messagerie.open .sidebar {
+    display: none;
+  }
+
+  .messagerie.open .conversation {
+    display: flex;
+  }
+
+  #button-back {
+    display: inline-block;
+  }
+
+  .conversation-head {
+    gap: 10px;
     padding: 12px;
   }
- 
-  .fil {
-    padding: 12px;
+
+  #div-messages {
+    padding: 14px 12px;
   }
- 
-  .fil p {
-    max-width: 85%;
-    padding: 9px 12px;
+
+  #div-messages article {
+    max-width: 92%;
   }
- 
-  .saisie {
-    gap: 8px;
+
+  #form-message {
     margin: 10px;
-    padding: 6px 6px 6px 12px;
-  }
- 
-  .saisie button {
-    padding: 10px 14px;
   }
 }
  
@@ -633,26 +848,13 @@ input[type="image"]:hover {
    ===================================================== */
  
 @media (max-width: 380px) {
-  .profil h1 {
-    font-size: 1.1rem;
-  }
- 
-  .avatar {
-    width: 44px;
-    height: 44px;
-    font-size: 1.3rem;
-  }
- 
-  .fil p {
-    max-width: 92%;
-  }
- 
-  .saisie button {
-    padding: 9px 11px;
-  }
- 
   .rangee-choix-avatars {
     gap: 10px;
+  }
+
+  .channel-item {
+    gap: 10px;
+    padding: 10px 12px;
   }
 }
  
