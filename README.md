@@ -7,13 +7,13 @@ membres de l'équipe : Alec Germain et William Comsel
 - Envoi et réception de messages en temps réel
 - Le salon ouvert est conservé lors d'un rechargement de la page
 - Mot de passe oublié : un lien est envoyé par courriel pour en choisir un nouveau
-
+- Dans la liste d'amis : dernier message, heure, pastille du nombre de messages non lus et recherche par prénom
+- Interface adaptée au mobile (un seul panneau à la fois sur petit écran)
+- Une conversation privée avec chaque ami
+  
 ## Fonctionnalité supplémentaire : Les utilisateurs vont avoir un avatar qui leur est attribué. Cela implique : 
 - À l'inscription, chaque personne choisit son avatar parmi 10 animaux
 - L'avatar des amis est affiché à côté de leur nom (liste d'amis, en-tête de la conversation et messages reçus)
-- Une conversation privée avec chaque ami
-- Interface adaptée au mobile (un seul panneau à la fois sur petit écran)
-- Dans la liste d'amis : dernier message, heure, pastille du nombre de messages non lus et recherche par prénoml
 
 ## Technologies
 | Rôle | Choix |
