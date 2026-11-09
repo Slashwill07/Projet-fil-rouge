@@ -18,15 +18,15 @@ async function allerSuite(user) {
   window.location.href = profil && profil.avatar ? "Message.html" : "ChoixAvatar.html";
 }
  
-// Déjà connecté sur cet appareil ? On saute cette page.
+// Si dejà connecté sur cet appareil, on saute cette page.
 (async () => {
   const { data: { session } } = await client.auth.getSession();
   if (!session) return;
 
-  // On vérifie auprès de Supabase que la session est encore valide
+  // On vérifie avec Supabase que la session est encore valide
   const { data: { user }, error } = await client.auth.getUser();
   if (error || !user) {
-    await client.auth.signOut(); // session périmée : on la supprime
+    await client.auth.signOut();
     return;
   }
 
@@ -99,7 +99,7 @@ boutonInscription.addEventListener("click", async () => {
   window.location.href = "ChoixAvatar.html";
 });
  
-// Mot de passe oublié : on envoie un lien vers la page de réinitialisation
+// Mot de passe oublié : on envoie un lien vers la page réinitialisation
 boutonOublie.addEventListener("click", async () => {
   const email = champEmail.value.trim();
  

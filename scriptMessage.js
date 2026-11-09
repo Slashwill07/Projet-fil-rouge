@@ -1,25 +1,10 @@
 /*
 Page des messages : liste des amis, affichage, envoi et réception en direct.
-
-Organisation du fichier :
-  1. outils (avatars, heures, mémoire du navigateur)
-  2. données (toutes les requêtes vers Supabase)
-  3. état de la page et éléments du DOM
-  4. liste des amis (colonne de gauche)
-  5. messages (colonne de droite)
-  6. événements
-  7. démarrage (init)
-
-Chaque ami = une conversation privée. La table `message` contient :
-  text            : le texte du message
-  create_by       : l'expéditeur (rempli automatiquement par la base)
-  destinataire_id : le destinataire
-Les règles de sécurité (RLS) font que chacun ne voit que les messages
-qu'il a envoyés ou reçus.
+Les règles de sécurité (RLS) font que chacun ne voit que les messages qu'il a envoyés ou reçus.
 */
 
 
-// -- 1. Outils
+// 1. Outils :
 
 
 const FICHIERS_AVATARS = {
@@ -74,7 +59,6 @@ function formaterHeureMessage(iso) {
 }
 
 // Mémoire du navigateur : retient l'ami ouvert si on recharge la page.
-// sessionStorage est propre à l'onglet et s'efface quand on le ferme.
 const Local = {
   CLE_AMI: "cleAmiCourant",
 
@@ -113,7 +97,7 @@ const Local = {
 };
 
 
-// -- 2. Données (Supabase)
+// 2. Données (Supabase) :
 // Le reste du fichier n'écrit jamais de requête : il appelle Data.quelqueChose().
 
 
@@ -191,7 +175,7 @@ const Data = {
 };
 
 
-// -- 3. État de la page et éléments du DOM
+// 3. État de la page et éléments du DOM :
 
 
 let moi = null;          // la personne connectée
@@ -212,7 +196,7 @@ const inputMessage = document.getElementById("input-message");
 const boutonEnvoyer = formMessage.querySelector("button");
 
 
-// -- 4. Liste des amis
+// 4. Historique des conversations / liste de contacts :
 
 
 async function chargerAmis() {
@@ -353,7 +337,7 @@ function fermerConversation() {
 }
 
 
-// -- 5. Messages
+// 5. Messages :
 
 
 async function chargerMessages() {
@@ -370,13 +354,12 @@ async function chargerMessages() {
 
   divMessages.replaceChildren();
   idsAffiches.clear();
-  // Les messages arrivent du plus récent au plus ancien : reverse() les remet dans l'ordre
+  // Encore un fois, les messages arrivent du plus récent au plus ancien : reverse() les remets dans l'ordre
   messages.reverse().forEach(afficherMessage);
   defiler();
 }
 
-// Construit <article><div class="corps"><header/><p/><time/></div></article>
-// (avec l'avatar de l'ami devant pour les messages reçus).
+// Construit le corps (avec l'avatar de l'ami devant pour les messages reçus).
 function afficherMessage(message) {
   if (idsAffiches.has(message.id)) return;
   idsAffiches.add(message.id);
@@ -433,7 +416,7 @@ async function recevoirMessage(message) {
 }
 
 
-// -- 6. Événements
+// 6. Événements :
 
 
 formMessage.addEventListener("submit", async (event) => {
@@ -490,7 +473,7 @@ client.auth.onAuthStateChange((evenement) => {
 });
 
 
-// -- 7. Démarrage (init)
+// 7. Démarrage (init) :
 
 
 async function init() {
@@ -516,7 +499,7 @@ async function init() {
   afficherAmis();
   arreterEcoute = Data.ecouterMessages(moi.id, recevoirMessage);
 
-  // Rechargement de la page avec une conversation déjà ouverte : on la rouvre
+  // Rechargement de la page avec une conversation déjà ouverte : on la réouvre
   const idMemorise = Local.lireAmiCourant();
   const ami = amis.find((a) => a.id === idMemorise);
   if (ami) await ouvrirAmi(ami);

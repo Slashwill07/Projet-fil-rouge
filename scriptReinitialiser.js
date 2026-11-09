@@ -4,8 +4,10 @@ const champConfirmation = document.querySelector("#confirmation");
 const bouton = document.querySelector("#enregistrer");
 const resultat = document.querySelector("#resultat");
  
-// Le lien reçu par e-mail ouvre cette page avec une session temporaire :
-// supabase-js la lit dans l'adresse. Sans session, le lien est invalide ou expiré.
+/* 
+  Le lien reçu par e-mail ouvre cette page avec une session temporaire :
+  supabase-js la lit dans l'adresse. Sans session, le lien est invalide ou expiré.
+*/
 (async () => {
   const { data: { session } } = await client.auth.getSession();
  

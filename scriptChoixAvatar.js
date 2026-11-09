@@ -25,15 +25,10 @@ async function choisirAvatar(nomAvatar) {
   window.location.href = "Message.html";
 }
  
-// Une seule boucle pour les 10 avatars (id = avatar1 ... avatar10)
+// Une seule boucle pour écouter le click sur chacun des 10 avatars (id = avatar1 ... avatar10)
 document.querySelectorAll("input[type='image']").forEach((image) => {
   image.addEventListener("click", (event) => {
     event.preventDefault(); // empêche l'envoi du formulaire
     choisirAvatar(image.id);
   });
 });
-//Questions pour le prof : 
-//1. Est-ce que le fait que le lien vers les images soit local à mon ordi c'est problématique ? 
-// qu'est-ce qu'y faut faire sinon ?
-//2. adresse mail obligatoire ? c'est plus simple donc go utiliser ça
-//3. Est-ce qu'on est obligés de garder mot de passe ou pas ?
